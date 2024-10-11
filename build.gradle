@@ -25,7 +25,8 @@ dependencies {
 
 	// DB (MySQL) 설정
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'mysql:mysql-connector-java'
+	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
+
 
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
