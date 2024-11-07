@@ -7,7 +7,5 @@ import java.util.Optional;
 
 public interface WordRepository extends JpaRepository<Word, Long> {
 
-    Optional<Word> findByUserId(Long user_id);
-    Optional<Word> findByWordId(Long word_id);
 
 }
