@@ -8,6 +8,7 @@ import java.util.List;
 
 @Entity
 @Getter @Setter
+@Table(name = "Word")
 public class Word {
 
     @Id @GeneratedValue
