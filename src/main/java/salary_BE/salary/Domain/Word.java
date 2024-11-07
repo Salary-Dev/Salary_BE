@@ -23,6 +23,8 @@ public class Word {
     private String story2;
     private String story3;
 
+    private String example;
+
     @OneToMany(mappedBy = "word")
     private List<WordLike> wordLikes;
 

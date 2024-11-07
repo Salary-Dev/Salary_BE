@@ -15,9 +15,13 @@ java {
 
 repositories {
 	mavenCentral()
+	// gpt 연동
+	maven { url = uri("https://repo.spring.io/milestone") }
+	maven { url = uri("https://repo.spring.io/snapshot") }
 }
 
 dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter'
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
@@ -27,10 +31,12 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	runtimeOnly 'mysql:mysql-connector-java:8.0.33'
 
-
 	// lombok
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	// gpt 연동
+	implementation("org.springframework.ai:spring-ai-bom:0.8.1-SNAPSHOT")
 }
 
 tasks.named('test') {
