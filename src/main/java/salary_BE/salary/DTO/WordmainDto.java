@@ -1,0 +1,19 @@
+package salary_BE.salary.DTO;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import java.util.List;
+
+@Getter
+@AllArgsConstructor
+public class WordmainDto {
+    private Long word_id;
+    private String word;
+    private String mean;
+    private String story1;
+    private String story2;
+    private String story3;
+    private String example;
+    private List<String> urls;
+}
