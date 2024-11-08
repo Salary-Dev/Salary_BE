@@ -1,21 +1,34 @@
-/*
 package salary_BE.salary.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
+import salary_BE.salary.Domain.Attendance;
+import salary_BE.salary.Domain.TodayStudy;
+import salary_BE.salary.Domain.User;
+import salary_BE.salary.Repository.AttendanceRepository;
+import salary_BE.salary.Repository.TodayStudyRepository;
+import salary_BE.salary.Repository.UserRepository;
 
+import javax.swing.plaf.ToolTipUI;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Service
+@RequiredArgsConstructor
 public class TrendQuizService {
 
     @Value("${openai.api.key}")
@@ -27,7 +40,11 @@ public class TrendQuizService {
 
     private final int maxTokens = 500;  // 길이가 길어질 시 늘려야 함
     private final RestTemplate restTemplate = new RestTemplate();
+    private final TodayStudyRepository todayStudyRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final UserService userService;
 
+    // 트렌드 퀴즈 요청
     public String getTrendQuiz() {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", "Bearer " + apiKey);
@@ -75,6 +92,46 @@ public class TrendQuizService {
             throw new RuntimeException("Failed to call OpenAI API or parse response", e);
         }
     }
+
+    // 트렌드 퀴즈 학습 여부
+    @Transactional
+    public void completeTrendQuiz(boolean trend) {
+        User currentUser = userService.getCurrentUser(); // 사용자 식별
+        LocalDate todayDate = getCurrentDate();
+        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), todayDate); // 사용자의 출석 정보 가져오기
+
+        // user_id + attendance_date로 검색 후 없으먄 정보 초기화
+        attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), todayDate);
+        if (attendance == null) {
+            attendance = new Attendance();
+            // 1. 출석률 테이블 [attendance_date] 속성에 학습 날짜 저장
+            attendance.setAttendanceDate(todayDate);
+            attendance.setAttendanceState(0); // 학습 상태 초기화
+            attendance = attendanceRepository.save(attendance);
+        }
+
+        // 오늘 학습 정보 가져오기 없으면 정보 초기화
+        TodayStudy todayStudy = todayStudyRepository.findByAttendanceId(attendance.getId());
+        if (todayStudy == null) {
+            todayStudy = new TodayStudy();
+            todayStudy.setAttendance(attendance); // 출석률 테이블과 연결
+            todayStudy.setTrend(false); // 트렌드 퀴즈 학습 여부 초기화
+            todayStudy = todayStudyRepository.save(todayStudy);
+        }
+
+
+        // 2. 오늘 학습 테이블 [트렌드] 속성에 학습 여부 반영
+        todayStudy.setTrend(trend);
+        todayStudyRepository.save(todayStudy); // 학습 상태 저장
+
+        int currentState = attendance.getAttendanceState();
+        // 3. 트렌드 퀴즈 학습 시 출석률 테이블 [attendance_state] 속성 + 1
+        attendance.setAttendanceState(currentState + 1);
+    }
+
+    // 오늘 날짜 가져오기
+    private LocalDate getCurrentDate() {
+        return java.time.LocalDate.now();
+    }
+
 }
-*
- */
