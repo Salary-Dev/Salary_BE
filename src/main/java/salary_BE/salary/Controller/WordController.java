@@ -9,6 +9,7 @@ import salary_BE.salary.Domain.Word;
 import salary_BE.salary.Repository.WordRepository;
 import salary_BE.salary.Service.WordService;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -22,4 +23,16 @@ public class WordController {
         return wordService.getWordById(word_id)
                 .orElseThrow(() -> new IllegalArgumentException("해당 word_id에 맞는 데이터가 없습니다."));
     }
+
+    @GetMapping("/words/search")
+    public WordmainDto getWordByword(@RequestParam String word) {
+        return wordService.getWordByword(word)
+                .orElseThrow(() -> new IllegalArgumentException("해당 word에 맞는 데이터가 없습니다."));
+    }
+
+    @GetMapping("/words/recommand")
+    public List<WordmainDto> getRandomWords() {
+        return wordService.getRandomWords();
+    }
+
 }
