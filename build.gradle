@@ -37,6 +37,9 @@ dependencies {
 
 	// gpt 연동
 	implementation("org.springframework.ai:spring-ai-bom:0.8.1-SNAPSHOT")
+
+	//json형태로 newapi받기
+	implementation 'org.json:json:20210307'
 }
 
 tasks.named('test') {
