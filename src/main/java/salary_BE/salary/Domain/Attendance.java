@@ -32,4 +32,7 @@ public class Attendance {
     @OneToMany(mappedBy = "attendance", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TodayStudy> todayStudies;
 
+    @Column(name = "last_word_id", nullable = false)
+    private Long lastWordId = 0L; // 마지막 학습한 단어 ID 저장을 위한 속성
+
 }

@@ -19,6 +19,7 @@ public interface WordLikeRepository extends JpaRepository<WordLike, Long> {
 
     @Query("SELECT wl FROM WordLike wl ORDER BY function('RAND')")
     List<WordLike> findRandomWordLikesLimit12(); //무작위로 12개 북마킹 단어 선정
-    Optional<WordLike> findByUserAndWordId(User user, Long wordId);
+
+    Optional<WordLike> findTopByUserOrderByWord(User user);  // 단어 학습 업데이트를 위해 가장 최근에 학습한 단어 선정
 
 }

@@ -73,18 +73,25 @@ public class WordLikeService {
     }
 
     // 단어 학습 여부
+    // 단어 학습 여부
     @Transactional
-    public String completeWord(Long word_id, boolean word) {
-        User currentUser = userService.getCurrentUser(); // 사용자 식별
+    public String completeWord(Long wordId) {
+        User currentUser = userService.getCurrentUser(); // 현재 사용자 식별
         LocalDate todayDate = getCurrentDate();
 
-        // [출석률] 테이블에서 유저의 [오늘 학습] 테이블 정보 가져오기 없으면 정보 초기화
+        // [출석률] 테이블에서 유저의 [오늘 학습] 테이블 정보 가져오기 없으면 초기화
         Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), todayDate);
         if (attendance == null) {
             attendance = new Attendance();
+            attendance.setUser(currentUser);
             attendance.setAttendanceDate(todayDate); // 출석 날짜 초기화
             attendance.setAttendanceState(0); // 학습 상태 초기화
+            attendance.setLastWordId(wordId); // 받은 word_id를 초기화 시 저장
             attendance = attendanceRepository.save(attendance);
+        } else {
+            // 3. 기존 Attendance에 lastWordId 업데이트
+            attendance.setLastWordId(wordId);
+            attendanceRepository.save(attendance);
         }
 
         // [오늘 학습] 테이블에서 학습 정보 가져오기 없으면 초기화
@@ -96,39 +103,20 @@ public class WordLikeService {
             todayStudy = todayStudyRepository.save(todayStudy);
         }
 
-        // [단어 북마크] 테이블에서 정보 가져오기 없으면 초기화
-        WordLike wordLike = wordLikeRepository.findByUserAndWordId(currentUser, word_id)
-                .orElse(null);
-        if (wordLike == null) {
-            wordLike = new WordLike();
-            wordLike.setUser(currentUser);
-            // wordLike.setWord(); // 초기 word_id 상태 초기화 (이 부분 수정 필요)
-            wordLike.setWordBookmark(false); // 초기 북마크 상태 초기화
-            wordLikeRepository.save(wordLike);
-        }
-
         // 1. [오늘 학습] 테이블에 단어 학습 여부 반영
-        todayStudy.setWord(word);
+        todayStudy.setWord(true); // 학습 완료로 설정
         todayStudyRepository.save(todayStudy);
 
         // 2. 출석률 테이블 [attendance_state] 속성 + 3
-        if (word) { // 학습이 완료된 경우에만 출석률 증가 (word = true)
-            int currentState = attendance.getAttendanceState();
-            attendance.setAttendanceState(currentState + 3);
-            attendanceRepository.save(attendance);
-        }
+        int currentState = attendance.getAttendanceState();
+        attendance.setAttendanceState(currentState + 3); // 학습 완료 시 출석률 증가
+        attendanceRepository.save(attendance);
 
-        // 3. 단어 북마크 테이블에 word_id + 1 추가
-        WordLike nextWordLike = wordLikeRepository.findByUserAndWordId(currentUser, word_id + 1).orElse(null); // Optional 처리
         return "success";
     }
 
     // 오늘 날짜 가져오기
     private LocalDate getCurrentDate() {
-                return java.time.LocalDate.now();
+        return java.time.LocalDate.now();
     }
-
 }
-
-
-

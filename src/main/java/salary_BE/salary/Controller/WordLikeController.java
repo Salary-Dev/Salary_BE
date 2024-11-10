@@ -36,14 +36,16 @@ public class WordLikeController {
     public List<WordRemindingDto> getRandomWords() {
         return wordLikeService.getRandomWords();
     }
+
     // 단어 학습 여부
     @PostMapping("/today-word/update-status")
-    public ResponseEntity<Map<String, String>> updateWord(@RequestBody Map<String, Object> request) {
-        Long wordId = Long.valueOf(request.get("word_id").toString());
-        boolean word = Boolean.parseBoolean(request.get("word").toString());
-        wordLikeService.completeWord(wordId, word);
+    public ResponseEntity<Map<String, String>> updateWord(@RequestParam Long word_id) {
+        if (word_id == null) {
+            return ResponseEntity.badRequest().body(Map.of("error", "'word_id' 파라미터 찾을 수 없습니다."));
+        }
 
-        // 상태 업데이트 성공 반환
+        wordLikeService.completeWord(word_id);
+
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
         return ResponseEntity.ok(response);
