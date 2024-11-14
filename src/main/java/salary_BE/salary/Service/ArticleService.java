@@ -17,8 +17,10 @@ import salary_BE.salary.Repository.ArticleRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -59,10 +61,16 @@ public class ArticleService {
                 // 날짜 파싱 및 설정
                 String pubDate = item.optString("pubDate");
                 if (!pubDate.isEmpty()) {
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z");
-                    LocalDateTime dateTime = LocalDateTime.parse(pubDate, formatter);
-                    article.setDate(dateTime);
+                    try {
+                        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("EEE, dd MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
+                        LocalDateTime dateTime = LocalDateTime.parse(pubDate, formatter);
+                        article.setDate(dateTime);
+                    } catch (DateTimeParseException e) {
+                        System.out.println("날짜 파싱 오류: " + pubDate);
+                        article.setDate(null); // 파싱 실패 시 null 또는 기본값으로 설정
+                    }
                 }
+
 
                 article.setSource(item.optString("originallink")); // 출처 (없으면 NULL)
 
