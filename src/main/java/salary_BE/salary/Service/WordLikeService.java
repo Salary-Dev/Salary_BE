@@ -31,7 +31,7 @@ public class WordLikeService {
     private final TodayStudyRepository todayStudyRepository;
     private final AttendanceRepository attendanceRepository;
 
-    // 단어장 저장
+    // 단어장 저장 (변경 사항 저장)
     // 이미 저장되어있는 단어라면 저장하지 않음
     public WordLike addWordToWordBook(Long wordId) {
         User currentUser = userService.getCurrentUser(); // 현재 사용자 가져오기
