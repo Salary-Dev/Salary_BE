@@ -31,8 +31,8 @@ public class Article {
 
     private String source;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shorts_id", nullable = false)
-    private Shorts shorts;
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @JoinColumn(name = "shorts_id", nullable = true)
+//    private Shorts shorts;
 
 }

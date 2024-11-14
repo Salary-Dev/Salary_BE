@@ -28,10 +28,10 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
 
-    @Value("${naver.api.client-id}")
+    @Value("${X-Naver-Client-Id}")
     private String clientId;
 
-    @Value("${naver.api.client-secret}")
+    @Value("${X-Naver-Client-Secret}")
     private String clientSecret;
 
     public void fetchAndSaveNewsArticles(String query) {
@@ -42,6 +42,8 @@ public class ArticleService {
         headers.set("X-Naver-Client-Id", clientId);
         headers.set("X-Naver-Client-Secret", clientSecret);
         HttpEntity<String> entity = new HttpEntity<>(headers);
+        System.out.println("X-Naver-Client-Id: " + clientId);
+        System.out.println("X-Naver-Client-Secret: " + clientSecret);
 
         try {
             // API 호출
@@ -91,7 +93,7 @@ public class ArticleService {
                         article.setHits(0L);
 
                         // Shorts 객체를 null로 설정
-                        article.setShorts(null);
+//                        article.setShorts(null);
 
                         articles.add(article);
                     }
