@@ -11,6 +11,8 @@ import salary_BE.salary.Repository.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.time.ZoneId;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static org.apache.tomcat.util.http.FastHttpDateFormat.getCurrentDate;
@@ -165,6 +167,6 @@ public class WordLikeService {
 
     // 오늘 날짜 가져오기
     private LocalDate getCurrentDate() {
-        return java.time.LocalDate.now();
+        return LocalDate.now(ZoneId.of("Asia/Seoul"));
     }
 }

@@ -22,6 +22,7 @@ import salary_BE.salary.Repository.UserRepository;
 
 import javax.swing.plaf.ToolTipUI;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -131,7 +132,7 @@ public class TrendQuizService {
 
     // 오늘 날짜 가져오기
     private LocalDate getCurrentDate() {
-        return java.time.LocalDate.now();
+        return LocalDate.now(ZoneId.of("Asia/Seoul"));
     }
 
 }
