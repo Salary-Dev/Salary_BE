@@ -1,4 +1,5 @@
 #!/bin/sh
+# github actions 오류 해결을 위한 주석
 
 #
 # Copyright © 2015-2021 the original authors.

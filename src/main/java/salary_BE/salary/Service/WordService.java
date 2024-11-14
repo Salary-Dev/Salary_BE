@@ -90,4 +90,30 @@ public class WordService {
                 })
                 .collect(Collectors.toList());
     }
+
+    // 실시간 단어 검색
+    public List<WordmainDto> getWordsByWordContaining(String wordSearch) {
+
+        // 입력된 단어를 포함하는 모든 단어 조회
+        List<Word> words = wordRepository.findByWordContaining((wordSearch));
+
+        return words.stream()
+                .map(word -> {
+                    List<String> urls = articleWordMappingRepository.findByWord(word)
+                            .stream()
+                            .map(mapping -> mapping.getArticle().getUrl())
+                            .collect(Collectors.toList());
+                    return new WordmainDto(
+                            word.getId(),
+                            word.getWord(),
+                            word.getMean(),
+                            word.getStory1(),
+                            word.getStory2(),
+                            word.getStory3(),
+                            word.getExample(),
+                            urls
+                    );
+                })
+                .collect(Collectors.toList());
+    }
 }

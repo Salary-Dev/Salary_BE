@@ -9,21 +9,39 @@ jobs:
   Deploy:
     runs-on: ubuntu-latest
     steps:
-        - name: SSH(원격 접속)로 EC2에 접속하기
-          uses: appleboy/ssh-action@v1.0.3
-          env:
-            APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}
-          with:
-            host: ${{ secrets.EC2_HOST }}
-            username: ${{ secrets.EC2_USERNAME }}
-            key: ${{ secrets.EC2_PRIVATE_KEY }}
-            envs: APPLICATION_PROPERTIES
-            script_stop: true
-            script: |
-              cd /home/ubuntu/Salary_BE
-              rm -rf src/main/resources/application-jelly.properties
-              git pull origin develop   
-              echo "$APPLICATION_PROPERTIES" > src/main/resources/application-jelly.properties
-              ./gradlew clean build
-              sudo fuser -k -n tcp 8080 || true 
-              nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 & 
+      - name: SSH(원격 접속)로 EC2에 접속하기
+        uses: appleboy/ssh-action@v1.0.3
+        env:
+          APPLICATION_PROPERTIES: ${{ secrets.APPLICATION_PROPERTIES }}
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          envs: APPLICATION_PROPERTIES
+          script_stop: true
+          script: |
+            echo "== Starting Deployment =="
+
+            cd /home/ubuntu/Salary_BE
+
+            echo "== Cleaning local changes =="
+            git reset --hard
+            git clean -fd
+
+            echo "== Fetching latest changes from develop branch =="
+            git fetch origin
+            git reset --hard origin/develop
+
+            echo "== Creating application-jelly.properties =="
+            echo "$APPLICATION_PROPERTIES" > src/main/resources/application-jelly.properties
+
+            echo "== Building application =="
+            ./gradlew clean build
+
+            echo "== Stopping existing application =="
+            sudo fuser -k -n tcp 8080 || true
+
+            echo "== Starting new application =="
+            nohup java -jar build/libs/*SNAPSHOT.jar > ./output.log 2>&1 &
+
+            echo "== Deployment Completed =="

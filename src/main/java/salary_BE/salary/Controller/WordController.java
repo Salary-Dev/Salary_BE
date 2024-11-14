@@ -25,9 +25,14 @@ public class WordController {
     }
 
     @GetMapping("/words/search")
-    public WordmainDto getWordByword(@RequestParam String word) {
-        return wordService.getWordByword(word)
-                .orElseThrow(() -> new IllegalArgumentException("해당 word에 맞는 데이터가 없습니다."));
+    public List<WordmainDto> getWordByword(@RequestParam String word) {
+        List<WordmainDto> results = wordService.getWordsByWordContaining(word);
+
+        if (results.isEmpty()) {
+            throw new IllegalArgumentException("해당 word에 맞는 데이터가 없습니다.");
+        }
+
+        return results;
     }
 
     @GetMapping("/words/recommand")

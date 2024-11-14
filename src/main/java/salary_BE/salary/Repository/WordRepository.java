@@ -14,4 +14,7 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     @Query("SELECT w FROM Word w ORDER BY function('RAND')")
     List<Word> findRandomWordsLimit7(); //무작위로 7개 북마킹 단어 선정
+
+    // 실시간 단어 검색
+    List<Word> findByWordContaining(String keyword);
 }
