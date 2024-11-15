@@ -17,4 +17,5 @@ public interface WordRepository extends JpaRepository<Word, Long> {
 
     // 실시간 단어 검색
     List<Word> findByWordContaining(String keyword);
+    List<Word> findAll();
 }

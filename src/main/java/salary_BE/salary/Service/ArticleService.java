@@ -13,7 +13,11 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import salary_BE.salary.Domain.Article;
+import salary_BE.salary.Domain.ArticleWordMapping;
+import salary_BE.salary.Domain.Word;
 import salary_BE.salary.Repository.ArticleRepository;
+import salary_BE.salary.Repository.ArticleWordMappingRepository;
+import salary_BE.salary.Repository.WordRepository;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -27,6 +31,8 @@ import java.util.Locale;
 public class ArticleService {
 
     private final ArticleRepository articleRepository;
+    private final WordRepository wordRepository;
+    private final ArticleWordMappingRepository articleWordMappingRepository;
 
     @Value("${X-Naver-Client-Id}")
     private String clientId;
@@ -34,16 +40,14 @@ public class ArticleService {
     @Value("${X-Naver-Client-Secret}")
     private String clientSecret;
 
-    public void fetchAndSaveNewsArticles(String query) {
-        String url = "https://openapi.naver.com/v1/search/news.json?query=" + query + "&display=20";
+    public void fetchAndSaveNewsArticles(String query, int display) {
+        String url = "https://openapi.naver.com/v1/search/news.json?query=" + query + "&sort = sim"+ "&display="+display;
 
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.set("X-Naver-Client-Id", clientId);
         headers.set("X-Naver-Client-Secret", clientSecret);
         HttpEntity<String> entity = new HttpEntity<>(headers);
-        System.out.println("X-Naver-Client-Id: " + clientId);
-        System.out.println("X-Naver-Client-Secret: " + clientSecret);
 
         try {
             // API 호출
@@ -97,10 +101,35 @@ public class ArticleService {
 
                         articles.add(article);
                     }
-
                     // 데이터베이스에 저장
                     try {
                         articleRepository.saveAll(articles);
+                        if(display != 2) {
+                            List<Word> words = wordRepository.findAll();
+                            for (Article article : articles) {
+                                for (Word word : words) {
+                                    if (article.getTitle().contains(word.getWord())) {
+                                        System.out.println("매핑된 단어 발견 단어 이름 : "+word.getWord());
+                                        ArticleWordMapping articleWordMapping = new ArticleWordMapping();
+                                        articleWordMapping.setArticle(article);
+                                        articleWordMapping.setWord(word);
+                                        articleWordMappingRepository.save(articleWordMapping);
+                                    }
+                                }
+                            }
+                        }
+                        //word-mapping api 호출시 적용
+                        else{
+                            Word word = wordRepository.findByWord(query)
+                                    .orElseThrow(() -> new RuntimeException("Word not found: " + query));
+                            for(Article article : articles){
+                                    ArticleWordMapping articleWordMapping = new ArticleWordMapping();
+                                    articleWordMapping.setArticle(article);
+                                    articleWordMapping.setWord(word);
+                                articleWordMappingRepository.save(articleWordMapping);
+                                    System.out.println("저장된 단어 : "+word.getWord());
+                            }
+                        }
                     } catch (Exception e) {
                         System.out.println("데이터베이스 저장 오류: " + e.getMessage());
                         e.printStackTrace();
