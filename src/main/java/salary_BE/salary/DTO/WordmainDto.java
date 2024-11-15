@@ -15,6 +15,6 @@ public class WordmainDto {
     private String story2;
     private String story3;
     private String example;
-    private List<String> urls;
+    private List<ArticleDto> articles;
     private Boolean isSaved; // 단어장 저장 여부
 }
