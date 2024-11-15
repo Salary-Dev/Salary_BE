@@ -53,6 +53,6 @@ public class AttendanceService {
                 .orElseThrow(() -> new RuntimeException("출석 정보에서 마지막 학습 단어 ID를 찾을 수 없습니다."));
 
         // 다음 학습할 단어 ID 반환
-        return maxLastWordId + 1;
+        return maxLastWordId;
     }
 }
