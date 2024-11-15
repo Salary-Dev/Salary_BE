@@ -30,6 +30,7 @@ public class WordService {
 
 
         if (word.isPresent()) {
+            Word wordEntity = word.get();
             List<ArticleDto> articles = articleWordMappingRepository.findByWord(word.get())
                     .stream()
                     .map(mapping -> new ArticleDto(
@@ -41,14 +42,15 @@ public class WordService {
             // 현재 사용자가 이 단어를 북마크했는지 확인
             boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, wordEntity);
             return Optional.of(new WordmainDto(
-                    word.get().getId(),
-                    word.get().getWord(),
-                    word.get().getMean(),
-                    word.get().getStory1(),
-                    word.get().getStory2(),
-                    word.get().getStory3(),
-                    word.get().getExample(),
-                    articles
+                    wordEntity.getId(),
+                    wordEntity.getWord(),
+                    wordEntity.getMean(),
+                    wordEntity.getStory1(),
+                    wordEntity.getStory2(),
+                    wordEntity.getStory3(),
+                    wordEntity.getExample(),
+                    articles,
+                    isSavedByUser
             ));
         }
         return Optional.empty();
@@ -59,6 +61,7 @@ public class WordService {
         Optional<Word> word = wordRepository.findByWord(wordSearch);
 
         if (word.isPresent()) {
+            Word wordEntity = word.get();
             List<ArticleDto> articles = articleWordMappingRepository.findByWord(word.get())
                     .stream()
                     .map(mapping -> new ArticleDto(
@@ -69,13 +72,13 @@ public class WordService {
 
             boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, wordEntity);
             return Optional.of(new WordmainDto(
-                    word.get().getId(),
-                    word.get().getWord(),
-                    word.get().getMean(),
-                    word.get().getStory1(),
-                    word.get().getStory2(),
-                    word.get().getStory3(),
-                    word.get().getExample(),
+                    wordEntity.getId(),
+                    wordEntity.getWord(),
+                    wordEntity.getMean(),
+                    wordEntity.getStory1(),
+                    wordEntity.getStory2(),
+                    wordEntity.getStory3(),
+                    wordEntity.getExample(),
                     articles,
                     isSavedByUser
             ));
