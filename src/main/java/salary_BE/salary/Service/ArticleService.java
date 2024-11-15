@@ -13,6 +13,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import salary_BE.salary.Domain.Article;
+
 import salary_BE.salary.Domain.ArticleWordMapping;
 import salary_BE.salary.Domain.Word;
 import salary_BE.salary.Repository.ArticleRepository;
@@ -101,6 +102,7 @@ public class ArticleService {
 
                         articles.add(article);
                     }
+
                     // 데이터베이스에 저장
                     try {
                         articleRepository.saveAll(articles);
@@ -130,6 +132,7 @@ public class ArticleService {
                                     System.out.println("저장된 단어 : "+word.getWord());
                             }
                         }
+
                     } catch (Exception e) {
                         System.out.println("데이터베이스 저장 오류: " + e.getMessage());
                         e.printStackTrace();

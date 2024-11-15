@@ -22,6 +22,7 @@ import salary_BE.salary.Repository.UserRepository;
 
 import javax.swing.plaf.ToolTipUI;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,7 @@ public class TrendQuizService {
 
     private final String openAiCompletionUrl = "https://api.openai.com/v1/chat/completions";
     private final String modelName = "gpt-4-turbo";
-    private final String fixedPrompt = "오늘의 경제/금융 트렌드를 반영한 4지 선다 퀴즈를 존댓말로 만들어 주세요. (연도 언급 x)" + "형식: {\"trend_quiz\": \"문제 내용\", \"correct\": \"정답\", \"incorrect\": [\"오답1\", \"오답2\", \"오답3\"], \"explanation\": \"해설\"}.";
+    private final String fixedPrompt = "오늘의 경제/금융 트렌드를 반영한 4지 선다 퀴즈를 존댓말로 만들어 주세요. (연도 언급 x, 문제와 해설의 말 끝이 -요.로 끝나게)" + "형식: {\"trend_quiz\": \"문제 내용\", \"correct\": \"정답\", \"incorrect\": [\"오답1\", \"오답2\", \"오답3\"], \"explanation\": \"해설\"}.";
 
     private final int maxTokens = 500;  // 길이가 길어질 시 늘려야 함
     private final RestTemplate restTemplate = new RestTemplate();
@@ -131,7 +132,7 @@ public class TrendQuizService {
 
     // 오늘 날짜 가져오기
     private LocalDate getCurrentDate() {
-        return java.time.LocalDate.now();
+        return LocalDate.now(ZoneId.of("Asia/Seoul"));
     }
 
 }

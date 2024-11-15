@@ -5,8 +5,9 @@ import org.springframework.stereotype.Service;
 import salary_BE.salary.DTO.ArticleDto;
 import salary_BE.salary.DTO.WordmainDto;
 import salary_BE.salary.Domain.ArticleWordMapping;
+import salary_BE.salary.Domain.User;
 import salary_BE.salary.Domain.Word;
-import salary_BE.salary.DTO.WordmainDto;
+import salary_BE.salary.Repository.WordLikeRepository;
 import salary_BE.salary.Repository.WordRepository;
 import salary_BE.salary.Repository.ArticleWordMappingRepository;
 
@@ -20,9 +21,13 @@ public class WordService {
 
     private final WordRepository wordRepository;
     private final ArticleWordMappingRepository articleWordMappingRepository;
+    private final WordLikeRepository wordLikeRepository;
+    private final UserService userService;
 
     public Optional<WordmainDto> getWordById(Long wordId) {
+        User currentUser = userService.getCurrentUser(); // 현재 유저 가져오기
         Optional<Word> word = wordRepository.findById(wordId);
+
 
         if (word.isPresent()) {
             List<ArticleDto> articles = articleWordMappingRepository.findByWord(word.get())
@@ -33,6 +38,8 @@ public class WordService {
                     ))
                     .collect(Collectors.toList());
 
+            // 현재 사용자가 이 단어를 북마크했는지 확인
+            boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, wordEntity);
             return Optional.of(new WordmainDto(
                     word.get().getId(),
                     word.get().getWord(),
@@ -48,6 +55,7 @@ public class WordService {
     }
 
     public Optional<WordmainDto> getWordByword(String wordSearch) {
+        User currentUser = userService.getCurrentUser(); // 현재 유저 가져오기
         Optional<Word> word = wordRepository.findByWord(wordSearch);
 
         if (word.isPresent()) {
@@ -59,6 +67,7 @@ public class WordService {
                     ))
                     .collect(Collectors.toList());
 
+            boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, wordEntity);
             return Optional.of(new WordmainDto(
                     word.get().getId(),
                     word.get().getWord(),
@@ -67,13 +76,15 @@ public class WordService {
                     word.get().getStory2(),
                     word.get().getStory3(),
                     word.get().getExample(),
-                    articles
+                    articles,
+                    isSavedByUser
             ));
         }
         return Optional.empty();
     }
 
     public List<WordmainDto> getRandomWords() {
+        User currentUser = userService.getCurrentUser(); // 현재 유저 가져오기
         List<Word> words = wordRepository.findRandomWordsLimit7();
 
         return words.stream()
@@ -87,6 +98,9 @@ public class WordService {
                             ))
                             .collect(Collectors.toList());
 
+                    // 현재 사용자가 이 단어를 북마크했는지 확인
+                    boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, word);
+
                     return new WordmainDto(
                             word.getId(),
                             word.getWord(),
@@ -95,7 +109,8 @@ public class WordService {
                             word.getStory2(),
                             word.getStory3(),
                             word.getExample(),
-                            articles
+                            articles,
+                            isSavedByUser
                     );
                 })
                 .collect(Collectors.toList());
@@ -103,9 +118,9 @@ public class WordService {
 
     // 실시간 단어 검색
     public List<WordmainDto> getWordsByWordContaining(String wordSearch) {
-
+        User currentUser = userService.getCurrentUser(); // 현재 유저 가져오기
         // 입력된 단어를 포함하는 모든 단어 조회
-        List<Word> words = wordRepository.findByWordContaining((wordSearch));
+        List<Word> words = wordRepository.findByWordContaining(wordSearch);
 
         return words.stream()
                 .map(word -> {
@@ -116,6 +131,10 @@ public class WordService {
                                     mapping.getArticle().getTitle()
                             ))
                             .collect(Collectors.toList());
+
+                    // 현재 사용자가 이 단어를 북마크했는지 확인
+                    boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, word);
+
                     return new WordmainDto(
                             word.getId(),
                             word.getWord(),
@@ -124,7 +143,9 @@ public class WordService {
                             word.getStory2(),
                             word.getStory3(),
                             word.getExample(),
-                            articles
+                            articles,
+                            isSavedByUser
+
                     );
                 })
                 .collect(Collectors.toList());

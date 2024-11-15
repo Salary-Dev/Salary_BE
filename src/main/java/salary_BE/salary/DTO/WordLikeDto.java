@@ -1,5 +1,6 @@
 package salary_BE.salary.DTO;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -8,7 +9,13 @@ import java.time.LocalDateTime;
 @Getter
 @AllArgsConstructor
 public class WordLikeDto {
-    private Long word_id;
+
+    @JsonProperty("word_id")
+    private Long wordId;
+
+    @JsonProperty("word")
     private String word;
-    private LocalDateTime like_date;
+
+    @JsonProperty("like_date")
+    private LocalDateTime likeDate;
 }

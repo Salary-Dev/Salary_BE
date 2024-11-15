@@ -9,6 +9,7 @@ import salary_BE.salary.Repository.AttendanceRepository;
 import salary_BE.salary.Repository.TodayStudyRepository;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class TodayStudyService {
         User currentUser = userService.getCurrentUser(); // 현재 사용자 조회
 
         // 오늘 날짜 기준으로 정보 가져오기
-        LocalDate today = LocalDate.now();
+        LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         // [출석률] 테이블 연결해 출석 정보 가져오기
         Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), today);
