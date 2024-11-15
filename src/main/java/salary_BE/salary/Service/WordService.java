@@ -2,6 +2,7 @@ package salary_BE.salary.Service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import salary_BE.salary.DTO.ArticleDto;
 import salary_BE.salary.DTO.WordmainDto;
 import salary_BE.salary.Domain.ArticleWordMapping;
 import salary_BE.salary.Domain.Word;
@@ -24,9 +25,12 @@ public class WordService {
         Optional<Word> word = wordRepository.findById(wordId);
 
         if (word.isPresent()) {
-            List<String> urls = articleWordMappingRepository.findByWord(word.get())
+            List<ArticleDto> articles = articleWordMappingRepository.findByWord(word.get())
                     .stream()
-                    .map(mapping -> mapping.getArticle().getUrl())
+                    .map(mapping -> new ArticleDto(
+                            mapping.getArticle().getUrl(),
+                            mapping.getArticle().getTitle()
+                    ))
                     .collect(Collectors.toList());
 
             return Optional.of(new WordmainDto(
@@ -37,7 +41,7 @@ public class WordService {
                     word.get().getStory2(),
                     word.get().getStory3(),
                     word.get().getExample(),
-                    urls
+                    articles
             ));
         }
         return Optional.empty();
@@ -47,9 +51,12 @@ public class WordService {
         Optional<Word> word = wordRepository.findByWord(wordSearch);
 
         if (word.isPresent()) {
-            List<String> urls = articleWordMappingRepository.findByWord(word.get())
+            List<ArticleDto> articles = articleWordMappingRepository.findByWord(word.get())
                     .stream()
-                    .map(mapping -> mapping.getArticle().getUrl())
+                    .map(mapping -> new ArticleDto(
+                            mapping.getArticle().getUrl(),
+                            mapping.getArticle().getTitle()
+                    ))
                     .collect(Collectors.toList());
 
             return Optional.of(new WordmainDto(
@@ -60,7 +67,7 @@ public class WordService {
                     word.get().getStory2(),
                     word.get().getStory3(),
                     word.get().getExample(),
-                    urls
+                    articles
             ));
         }
         return Optional.empty();
@@ -72,9 +79,12 @@ public class WordService {
         return words.stream()
                 .limit(7)
                 .map(word -> {
-                    List<String> urls = articleWordMappingRepository.findByWord(word)
+                    List<ArticleDto> articles = articleWordMappingRepository.findByWord(word)
                             .stream()
-                            .map(mapping -> mapping.getArticle().getUrl())
+                            .map(mapping -> new ArticleDto(
+                                    mapping.getArticle().getUrl(),
+                                    mapping.getArticle().getTitle()
+                            ))
                             .collect(Collectors.toList());
 
                     return new WordmainDto(
@@ -85,7 +95,7 @@ public class WordService {
                             word.getStory2(),
                             word.getStory3(),
                             word.getExample(),
-                            urls
+                            articles
                     );
                 })
                 .collect(Collectors.toList());
@@ -99,9 +109,12 @@ public class WordService {
 
         return words.stream()
                 .map(word -> {
-                    List<String> urls = articleWordMappingRepository.findByWord(word)
+                    List<ArticleDto> articles = articleWordMappingRepository.findByWord(word)
                             .stream()
-                            .map(mapping -> mapping.getArticle().getUrl())
+                            .map(mapping -> new ArticleDto(
+                                    mapping.getArticle().getUrl(),
+                                    mapping.getArticle().getTitle()
+                            ))
                             .collect(Collectors.toList());
                     return new WordmainDto(
                             word.getId(),
@@ -111,7 +124,7 @@ public class WordService {
                             word.getStory2(),
                             word.getStory3(),
                             word.getExample(),
-                            urls
+                            articles
                     );
                 })
                 .collect(Collectors.toList());
