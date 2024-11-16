@@ -21,7 +21,7 @@ public interface WordLikeRepository extends JpaRepository<WordLike, Long> {
 
     Optional<WordLike> findTopByUserOrderByLikeDateDesc(User user);
 
-    @Query(value = "SELECT * FROM word_like ORDER BY RAND() LIMIT 12", nativeQuery = true)
+    @Query(value = "SELECT * FROM word_like ORDER BY RAND() LIMIT 10", nativeQuery = true)
     List<WordLike> findRandomWordLikesLimit12(); //무작위로 12개 북마킹 단어 선정
 
     // 특정 단어를 북마크했는지 확인
