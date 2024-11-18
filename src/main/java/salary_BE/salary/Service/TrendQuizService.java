@@ -99,10 +99,9 @@ public class TrendQuizService {
     public void completeTrendQuiz(boolean trend) {
         User currentUser = userService.getCurrentUser(); // 사용자 식별
         LocalDate todayDate = getCurrentDate();
-        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), todayDate); // 사용자의 출석 정보 가져오기
 
         // user_id + attendance_date로 검색 후 없으면 정보 초기화
-        attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), todayDate);
+        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), todayDate);
         if (attendance == null) {
             attendance = new Attendance();
             // 1. 출석률 테이블 [attendance_date] 속성에 학습 날짜 저장
