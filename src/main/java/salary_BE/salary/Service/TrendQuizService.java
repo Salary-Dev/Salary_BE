@@ -106,6 +106,7 @@ public class TrendQuizService {
             attendance = new Attendance();
             // 1. 출석률 테이블 [attendance_date] 속성에 학습 날짜 저장
             attendance.setAttendanceDate(todayDate);
+            attendance.setUser(currentUser); // 유저 정보 추가
             attendance.setAttendanceState(0); // 학습 상태 초기화
             attendance = attendanceRepository.save(attendance);
         }
