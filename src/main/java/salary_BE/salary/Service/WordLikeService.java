@@ -68,7 +68,7 @@ public class WordLikeService {
                     Map<String, Object> result = new HashMap<>();
                     result.put("word_id", wordLike.getWord().getId());
                     result.put("word", wordLike.getWord().getWord());
-                    result.put("like_date", wordLike.getLikeDate().toLocalDate().toString()); // yyyy-MM-dd 형식으로 변환
+                    result.put("like_date", wordLike.getLikeDate());
                     return result;
                 })
                 .collect(Collectors.toList());
