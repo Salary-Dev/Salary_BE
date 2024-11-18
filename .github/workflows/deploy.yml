@@ -12,6 +12,11 @@ jobs:
       - name: GitHub Repository 파일 불러오기
         uses: actions/checkout@v4
 
+      - name: Test
+        run: |
+          ls
+          pwd
+
       - name: Reset GitHub Actions Cache
         run: sudo rm -rf /usr/local/actions/cache || true
 
