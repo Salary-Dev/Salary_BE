@@ -26,7 +26,7 @@ public class AttendanceScheduler {
     private final UserService userService;
 
     // 매일 자정 (00:00)에 실행
-    @Scheduled(cron = "*/1 * * * * *", zone = "Asia/Seoul")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
     public void initializeDailyAttendance() {
 
