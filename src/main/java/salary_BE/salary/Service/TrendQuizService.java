@@ -37,7 +37,7 @@ public class TrendQuizService {
 
     private final String openAiCompletionUrl = "https://api.openai.com/v1/chat/completions";
     private final String modelName = "gpt-4-turbo";
-    private final String fixedPrompt = "오늘의 경제/금융 트렌드를 반영한 4지 선다 퀴즈를 존댓말로 만들어 주세요. (연도 언급 x, 문제와 해설의 말 끝은 모두 '-해요' 체를 반드시 사용, 해설은 5줄 이상)" + "형식: {\"trend_quiz\": \"문제 내용\", \"correct\": \"정답\", \"incorrect\": [\"오답1\", \"오답2\", \"오답3\"], \"explanation\": \"해설\"}.";
+    private final String fixedPrompt = "오늘의 경제/금융 트렌드를 반영한 4지 선다 퀴즈를 존댓말로 만들어 주세요. (연도 언급 x, 해설은 5줄 이상)" + "문제와 해설의 말 끝은 모두 '-해요' 체를 반드시 사용" + "형식: {\"trend_quiz\": \"문제 내용\", \"correct\": \"정답\", \"incorrect\": [\"오답1\", \"오답2\", \"오답3\"], \"explanation\": \"해설\"}.";
 
     private final int maxTokens = 500;  // 길이가 길어질 시 늘려야 함
     private final RestTemplate restTemplate = new RestTemplate();
