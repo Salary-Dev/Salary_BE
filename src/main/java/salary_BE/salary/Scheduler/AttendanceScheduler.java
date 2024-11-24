@@ -34,11 +34,21 @@ public class AttendanceScheduler {
 
         // 모든 사용자에 대한 튜플 추가 및 초기화
         userService.getAllUsers().forEach(user -> {
+
+            // 마지막 Attendnace 기준
+            Attendance lastAttendance = attendanceRepository
+                    .findTopByUserIdOrderByAttendanceDateDesc(user.getId())
+                    .orElse(null);
+
+            // 학습할 단어 변경
+            Long lastWordId = (lastAttendance != null) ? lastAttendance.getLastWordId() : 0L;
+
             // 1. Attendance 초기화
             Attendance attendance = new Attendance();
             attendance.setAttendanceDate(todayDate);
             attendance.setUser(user);
             attendance.setAttendanceState(0);
+            attendance.setLastWordId(lastWordId + 1);
             attendance = attendanceRepository.save(attendance);
 
             // 2. TodayStudy 초기화
