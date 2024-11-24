@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import salary_BE.salary.Domain.Attendance;
+import salary_BE.salary.Domain.User;
 import salary_BE.salary.Repository.AttendanceRepository;
 import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Repository.WordRepository;
@@ -35,8 +36,7 @@ public class AttendanceService {
     }
 
     // 월별 출석률 조회 (시드 조회에 사용)
-    public List<Attendance> getAttendanceByMonth(String attendanceDate) {
-        User currentUser = userService.getCurrentUser();
+    public List<Attendance> getAttendanceByMonth(String attendanceDate, User user) {
 
         YearMonth yearMonth;
         try {
@@ -50,7 +50,7 @@ public class AttendanceService {
         LocalDate endDate = yearMonth.atEndOfMonth(); // 종료일
 
         // AttendanceRepository를 사용하여 월 범위 데이터 조회
-        return attendanceRepository.findAllByUserIdAndAttendanceDateBetween(currentUser.getId(), startDate, endDate);
+        return attendanceRepository.findAllByUserIdAndAttendanceDateBetween(user.getId(), startDate, endDate);
     }
 
 
