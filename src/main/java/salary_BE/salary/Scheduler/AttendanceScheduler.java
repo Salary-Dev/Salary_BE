@@ -35,7 +35,7 @@ public class AttendanceScheduler {
         // 모든 사용자에 대한 튜플 추가 및 초기화
         userService.getAllUsers().forEach(user -> {
 
-            // 마지막 Attendnace 기준
+            // 마지막 Attendnace 기준으로 함
             Attendance lastAttendance = attendanceRepository
                     .findTopByUserIdOrderByAttendanceDateDesc(user.getId())
                     .orElse(null);
