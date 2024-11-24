@@ -3,9 +3,12 @@ package salary_BE.salary.Controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import salary_BE.salary.DTO.CustomUserDetails;
 import salary_BE.salary.DTO.WordLikeDto;
 import salary_BE.salary.DTO.WordRemindingDto;
+import salary_BE.salary.Domain.User;
 import salary_BE.salary.Domain.WordLike;
 import salary_BE.salary.Service.WordLikeService;
 
@@ -22,9 +25,11 @@ public class WordLikeController {
 
     // 단어 북마크 저장
     @PostMapping("/wordbook")
-    public ResponseEntity<Map<String, String>> addWordToWordBook(@RequestParam Long word_id) {
+    public ResponseEntity<Map<String, String>> addWordToWordBook(@RequestParam Long word_id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        wordLikeService.addWordToWordBook(word_id);
+        User user = userDetails.getUser();
+
+        wordLikeService.addWordToWordBook(word_id, user);
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
@@ -33,18 +38,21 @@ public class WordLikeController {
 
     // 단어장 조회
     @GetMapping("/wordbook")
-    public ResponseEntity<List<Map<String, Object>>> getUserLikedWords() {
+    public ResponseEntity<List<Map<String, Object>>> getUserLikedWords(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        List<Map<String, Object>> likedWords = wordLikeService.getUserLikedWords();
+        User user = userDetails.getUser();
+
+        List<Map<String, Object>> likedWords = wordLikeService.getUserLikedWords(user);
 
         return ResponseEntity.ok(likedWords);
     }
 
     // 단어장 삭제
     @DeleteMapping("/wordbook")
-    public ResponseEntity<Map<String, String>> deleteWordLike(@RequestParam Long word_id) {
+    public ResponseEntity<Map<String, String>> deleteWordLike(@RequestParam Long word_id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
         // 서비스 호출
-        wordLikeService.deleteWordLike(word_id);
+        wordLikeService.deleteWordLike(word_id,user);
 
         // 성공 응답 반환
         Map<String, String> response = new HashMap<>();
@@ -54,9 +62,11 @@ public class WordLikeController {
 
     // 단어장 리마인더
     @GetMapping("/wordbook/reminder")
-    public ResponseEntity<List<Map<String, String>>> getRandomWords() {
+    public ResponseEntity<List<Map<String, String>>> getRandomWords(@AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        User user = userDetails.getUser();
         // WordRemindingDto 리스트를 JSON 배열 형식으로 변환
-        List<Map<String, String>> randomWords = wordLikeService.getRandomWords().stream()
+        List<Map<String, String>> randomWords = wordLikeService.getRandomWords(user).stream()
                 .map(wordRemindingDto -> Map.of(
                         "word", wordRemindingDto.getWord(),
                         "mean", wordRemindingDto.getMean()
@@ -68,12 +78,15 @@ public class WordLikeController {
 
     // 단어 학습 여부
     @PostMapping("/today-word/update-status")
-    public ResponseEntity<Map<String, String>> updateWord(@RequestParam Long word_id) {
+    public ResponseEntity<Map<String, String>> updateWord(@RequestParam Long word_id, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        User user = userDetails.getUser();
+
         if (word_id == null) {
             return ResponseEntity.badRequest().body(Map.of("error", "'word_id' 파라미터 찾을 수 없습니다."));
         }
 
-        wordLikeService.completeWord(word_id);
+        wordLikeService.completeWord(word_id, user);
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");

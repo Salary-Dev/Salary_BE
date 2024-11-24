@@ -2,7 +2,9 @@ package salary_BE.salary.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import salary_BE.salary.DTO.CustomUserDetails;
 import salary_BE.salary.Domain.Attendance;
 import salary_BE.salary.Domain.User;
 import salary_BE.salary.Service.AttendanceService;
@@ -23,12 +25,13 @@ public class SeedController {
 
     // 시드 변경
     @PatchMapping("/seed/update")
-    public ResponseEntity<Map<String, String>> updateSeed(@RequestBody Map<String, Integer> requestBody) {
+    public ResponseEntity<Map<String, String>> updateSeed(@RequestBody Map<String, Integer> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
 
         Integer seed_earned = requestBody.get("seed_earned");
         Integer seed_used = requestBody.get("seed_used");
 
-        seedService.updateSeed(seed_earned, seed_used);
+        seedService.updateSeed(seed_earned, seed_used, user);
 
         Map<String, String> response = new HashMap<>();
         response.put("status", "success");
@@ -37,8 +40,10 @@ public class SeedController {
 
     // 시드 조회
     @GetMapping("/seed")
-    public ResponseEntity<Map<String, Object>> getSeedLog(@RequestParam("date") String attendanceDate) {
-        List<Attendance> attendances = attendanceService.getAttendanceByMonth(attendanceDate);
+    public ResponseEntity<Map<String, Object>> getSeedLog(@RequestParam("date") String attendanceDate,@AuthenticationPrincipal CustomUserDetails userDetails) {
+        User user = userDetails.getUser();
+        List<Attendance> attendances = attendanceService.getAttendanceByMonth(attendanceDate, user);
+
 
         // total_seed 조회를 위한 현재 사용자 가져오기
         User currentUser = userService.getCurrentUser();
