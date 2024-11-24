@@ -1,17 +1,13 @@
 package salary_BE.salary.Domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Getter
-@Setter
+@Getter @Setter
 public class User {
 
     @Id

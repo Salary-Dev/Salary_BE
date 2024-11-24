@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import salary_BE.salary.Domain.Attendance;
 import salary_BE.salary.Domain.TodayStudy;
-import salary_BE.salary.Domain.User;
 import salary_BE.salary.Repository.AttendanceRepository;
 import salary_BE.salary.Repository.TodayStudyRepository;
 
