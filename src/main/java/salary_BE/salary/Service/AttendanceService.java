@@ -23,8 +23,7 @@ public class AttendanceService {
     private final WordRepository wordRepository;
 
     // 날짜별 출석률 조회
-    public Attendance getAttendanceByDate(String attendanceDate) {
-        User currentUser = userService.getCurrentUser(); // 현재 사용자 조회
+    public Attendance getAttendanceByDate(String attendanceDate, Long userId) {
 
         LocalDate date = LocalDate.parse(attendanceDate);
         try {
@@ -32,15 +31,14 @@ public class AttendanceService {
         } catch (DateTimeParseException e) {
             throw new IllegalArgumentException("YYYY-MM-DD' 형식으로 입력하세요.");
         }
-        return attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), date);
+        return attendanceRepository.findByUserIdAndAttendanceDate(userId, date);
     }
 
     // 오늘 학습 단어 조회
-    public Long getTodayWord() {
-        User currentUser = userService.getCurrentUser(); // 현재 사용자 조회
+    public Long getTodayWord(Long userId) {
 
         // current User의 userId와 매칭되는 Attendance 데이터 가져오기
-        List<Attendance> userAttendances = attendanceRepository.findAllByUserId(currentUser.getId());
+        List<Attendance> userAttendances = attendanceRepository.findAllByUserId(userId);
 
         if (userAttendances.isEmpty()) {
             throw new RuntimeException("출석 정보가 없습니다.");

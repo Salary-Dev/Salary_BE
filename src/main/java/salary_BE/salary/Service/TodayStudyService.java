@@ -22,15 +22,14 @@ public class TodayStudyService {
     private final AttendanceRepository attendanceRepository;
 
     // 오늘 학습 과목 조회
-    public Map<String, Boolean> getTodayStudyStatus() {
+    public Map<String, Boolean> getTodayStudyStatus(Long userId) {
 
-        User currentUser = userService.getCurrentUser(); // 현재 사용자 조회
 
         // 오늘 날짜 기준으로 정보 가져오기
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
         // [출석률] 테이블 연결해 출석 정보 가져오기
-        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), today);
+        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(userId, today);
         if (attendance == null) {
             throw new RuntimeException("출석 정보가 없습니다.");
         }

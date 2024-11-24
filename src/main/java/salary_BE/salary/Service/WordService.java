@@ -24,8 +24,7 @@ public class WordService {
     private final WordLikeRepository wordLikeRepository;
     private final UserService userService;
 
-    public Optional<WordmainDto> getWordById(Long wordId) {
-        User currentUser = userService.getCurrentUser(); // 현재 유저 가져오기
+    public Optional<WordmainDto> getWordById(Long wordId, User user) {
         Optional<Word> word = wordRepository.findById(wordId);
 
 
@@ -40,7 +39,7 @@ public class WordService {
                     .collect(Collectors.toList());
 
             // 현재 사용자가 이 단어를 북마크했는지 확인
-            boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, wordEntity);
+            boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(user, wordEntity);
             return Optional.of(new WordmainDto(
                     wordEntity.getId(),
                     wordEntity.getWord(),
@@ -56,8 +55,7 @@ public class WordService {
         return Optional.empty();
     }
 
-    public Optional<WordmainDto> getWordByword(String wordSearch) {
-        User currentUser = userService.getCurrentUser(); // 현재 유저 가져오기
+    public Optional<WordmainDto> getWordByword(String wordSearch, User user) {
         Optional<Word> word = wordRepository.findByWord(wordSearch);
 
         if (word.isPresent()) {
@@ -70,7 +68,7 @@ public class WordService {
                     ))
                     .collect(Collectors.toList());
 
-            boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, wordEntity);
+            boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(user, wordEntity);
             return Optional.of(new WordmainDto(
                     wordEntity.getId(),
                     wordEntity.getWord(),
@@ -86,8 +84,7 @@ public class WordService {
         return Optional.empty();
     }
 
-    public List<WordmainDto> getRandomWords() {
-        User currentUser = userService.getCurrentUser(); // 현재 유저 가져오기
+    public List<WordmainDto> getRandomWords(User user) {
         List<Word> words = wordRepository.findRandomWordsLimit7();
 
         return words.stream()
@@ -102,7 +99,7 @@ public class WordService {
                             .collect(Collectors.toList());
 
                     // 현재 사용자가 이 단어를 북마크했는지 확인
-                    boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, word);
+                    boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(user, word);
 
                     return new WordmainDto(
                             word.getId(),
@@ -120,8 +117,7 @@ public class WordService {
     }
 
     // 실시간 단어 검색
-    public List<WordmainDto> getWordsByWordContaining(String wordSearch) {
-        User currentUser = userService.getCurrentUser(); // 현재 유저 가져오기
+    public List<WordmainDto> getWordsByWordContaining(String wordSearch, User user) {
         // 입력된 단어를 포함하는 모든 단어 조회
         List<Word> words = wordRepository.findByWordContaining(wordSearch);
 
@@ -136,7 +132,7 @@ public class WordService {
                             .collect(Collectors.toList());
 
                     // 현재 사용자가 이 단어를 북마크했는지 확인
-                    boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(currentUser, word);
+                    boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(user, word);
 
                     return new WordmainDto(
                             word.getId(),

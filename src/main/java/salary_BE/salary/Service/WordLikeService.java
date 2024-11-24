@@ -33,8 +33,7 @@ public class WordLikeService {
 
     // 단어장 저장 (변경 사항 저장)
     // 이미 저장되어있는 단어라면 저장하지 않음
-    public WordLike addWordToWordBook(Long wordId) {
-        User currentUser = userService.getCurrentUser(); // 현재 사용자 가져오기
+    public WordLike addWordToWordBook(Long wordId, User user) {
 
         // Word 엔티티 조회
         Word word = wordRepository.findById(wordId)
@@ -48,7 +47,7 @@ public class WordLikeService {
 
         // WordLike 엔티티 생성
         WordLike wordLike = new WordLike();
-        wordLike.setUser(currentUser);
+        wordLike.setUser(user);
         wordLike.setWord(word);
         wordLike.setWordBookmark(true);
         wordLike.setLikeDate(LocalDateTime.now());
@@ -58,11 +57,10 @@ public class WordLikeService {
 
 
     // 단어장 조회
-    public List<Map<String, Object>> getUserLikedWords() {
-        User currentUser = userService.getCurrentUser(); // 현재 사용자 가져오기
+    public List<Map<String, Object>> getUserLikedWords(User user) {
 
         // 현재 사용자가 저장한 단어 중 word_bookmark가 1인 것 조회
-        return wordLikeRepository.findByUserAndWordBookmark(currentUser, true).stream()
+        return wordLikeRepository.findByUserAndWordBookmark(user, true).stream()
                 .filter(wordLike -> wordLike.getLikeDate() != null) // like_date가 null인 데이터 제외 (db 재설정 시 삭제해도 되는 조건)
                 .map(wordLike -> {
                     Map<String, Object> result = new HashMap<>();
@@ -75,16 +73,13 @@ public class WordLikeService {
     }
 
     // 단어장 삭제
-    public void deleteWordLike(Long wordId) {
-        // 현재 사용자 가져오기
-        User currentUser = userService.getCurrentUser();
-
+    public void deleteWordLike(Long wordId, User user) {
         // Word ID로 WordLike 엔티티 조회
         WordLike wordLike = wordLikeRepository.findByWordId(wordId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 단어는 북마크되지 않았습니다."));
 
         // 현재 사용자 확인
-        if (!wordLike.getUser().equals(currentUser)) {
+        if (!wordLike.getUser().equals(user)) {
             throw new IllegalArgumentException("현재 사용자가 이 단어를 북마크하지 않았습니다.");
         }
 
@@ -93,11 +88,9 @@ public class WordLikeService {
     }
 
     // 단어장 리마인더
-    public List<WordRemindingDto> getRandomWords() {
-        User currentUser = userService.getCurrentUser();
+    public List<WordRemindingDto> getRandomWords(User user) {
 
-        // currentUser가 null일 경우 예외 처리 추가
-        if (currentUser == null) {
+        if (user == null) {
             throw new IllegalStateException("사용자가 유혀하지 않습니다.");
         }
 
@@ -109,7 +102,7 @@ public class WordLikeService {
         }
 
         return wordLikes.stream()
-                .filter(wordLike -> Objects.equals(wordLike.getUser(), currentUser))
+                .filter(wordLike -> Objects.equals(wordLike.getUser(), user))
                 .map(wordLike -> {
                     if (wordLike.getWord() != null && wordLike.getWord().getWord() != null) {
                         return new WordRemindingDto(
@@ -125,15 +118,14 @@ public class WordLikeService {
 
     // 단어 학습 여부
     @Transactional
-    public String completeWord(Long wordId) {
-        User currentUser = userService.getCurrentUser(); // 현재 사용자 식별
+    public String completeWord(Long wordId, User user) {
         LocalDate todayDate = getCurrentDate();
 
         // [출석률] 테이블에서 유저의 [오늘 학습] 테이블 정보 가져오기 없으면 초기화
-        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), todayDate);
+        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(user.getId(), todayDate);
         if (attendance == null) {
             attendance = new Attendance();
-            attendance.setUser(currentUser);
+            attendance.setUser(user);
             attendance.setAttendanceDate(todayDate); // 출석 날짜 초기화
             attendance.setAttendanceState(0); // 학습 상태 초기화
             attendance.setLastWordId(wordId); // 받은 word_id를 초기화 시 저장

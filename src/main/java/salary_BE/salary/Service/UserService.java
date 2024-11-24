@@ -23,6 +23,7 @@ public class UserService {
         // 아이디 중복 체크
         if (userRepository.existsByLoginId(loginId)) {
             throw new UsernameAlreadyExistsException("이미 존재하는 아이디입니다.");
+
         }
 
         User userData = new User();
