@@ -1,6 +1,7 @@
 package salary_BE.salary.Domain;
 
 import jakarta.persistence.*;
+import jakarta.websocket.server.ServerEndpoint;
 import lombok.Getter;
 import lombok.Setter;
 

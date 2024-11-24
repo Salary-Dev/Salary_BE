@@ -44,6 +44,7 @@ public class SeedController {
         User user = userDetails.getUser();
         List<Attendance> attendances = attendanceService.getAttendanceByMonth(attendanceDate, user);
 
+
         // total_seed 조회를 위한 현재 사용자 가져오기
         User currentUser = userService.getCurrentUser();
         Integer totalSeed = currentUser.getSalaryPoint();
