@@ -26,8 +26,15 @@ public class Attendance {
     @Column(name = "attendance_state")
     private Integer attendanceState;
 
-    @Column(name = "today_salaryPoint")
+    @Column(name = "today_salaryPoint") // 로직 수정 후 삭제 할 칼럼
     private Integer todaySalaryPoint;
+
+    // 시드 적립과 사용 구분
+    @Column(name = "today_SalaryPoint_earned")
+    private Integer todaySalaryPoint_earned;
+
+    @Column(name = "today_SalaryPoint_used")
+    private Integer todaySalaryPoint_used;
 
     @OneToMany(mappedBy = "attendance", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<TodayStudy> todayStudies;
