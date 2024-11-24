@@ -4,8 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import salary_BE.salary.Domain.Attendance;
+import salary_BE.salary.Domain.User;
 import salary_BE.salary.Service.AttendanceService;
 import salary_BE.salary.Service.SeedService;
+import salary_BE.salary.Service.UserService;
 
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ public class SeedController {
 
     private final SeedService seedService;
     private final AttendanceService attendanceService;
+    private final UserService userService;
 
     // 시드 변경
     @PatchMapping("/seed/update")
@@ -37,8 +40,13 @@ public class SeedController {
     public ResponseEntity<Map<String, Object>> getSeedLog(@RequestParam("date") String attendanceDate) {
         List<Attendance> attendances = attendanceService.getAttendanceByMonth(attendanceDate);
 
+        // total_seed 조회를 위한 현재 사용자 가져오기
+        User currentUser = userService.getCurrentUser();
+        Integer totalSeed = currentUser.getSalaryPoint();
+
         // 조회된 출석 데이터를 JSON 형태로 변환
         Map<String, Object> response = new HashMap<>();
+        response.put("total_seed", totalSeed);
         response.put("attendance_logs", attendances.stream().map(attendance -> {
             Map<String, Object> log = new HashMap<>();
             log.put("attendance_date", attendance.getAttendanceDate());
