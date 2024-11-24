@@ -19,4 +19,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     List<Attendance> findAllByUserId(Long userId);
 
+    // 시드 내역 조회하기 위한 함수
+    List<Attendance> findAllByUserIdAndAttendanceDateBetween(Long user_id, LocalDate startDate, LocalDate endDate);
+
 }

@@ -10,6 +10,7 @@ import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Repository.WordRepository;
 
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeParseException;
 import java.util.List;
 
@@ -34,6 +35,27 @@ public class AttendanceService {
         }
         return attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), date);
     }
+
+    // 월별 출석률 조회 (시드 조회에 사용)
+    public List<Attendance> getAttendanceByMonth(String attendanceDate) {
+        User currentUser = userService.getCurrentUser();
+
+        YearMonth yearMonth;
+        try {
+            yearMonth = YearMonth.parse(attendanceDate); // 'YYYY-MM' 형식 파싱
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("'YYYY-MM' 형식으로 입력");
+        }
+
+        // 월의 첫 번째 날과 마지막 날 계산
+        LocalDate startDate = yearMonth.atDay(1); // 시작일
+        LocalDate endDate = yearMonth.atEndOfMonth(); // 종료일
+
+        // AttendanceRepository를 사용하여 월 범위 데이터 조회
+        return attendanceRepository.findAllByUserIdAndAttendanceDateBetween(currentUser.getId(), startDate, endDate);
+    }
+
+
 
     // 오늘 학습 단어 조회
     public Long getTodayWord() {
