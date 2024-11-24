@@ -8,6 +8,7 @@ import salary_BE.salary.Service.AttendanceService;
 import salary_BE.salary.Service.SeedService;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -34,14 +35,18 @@ public class SeedController {
     // 시드 조회
     @GetMapping("/seed")
     public ResponseEntity<Map<String, Object>> getSeedLog(@RequestParam("date") String attendanceDate) {
-        Attendance attendance = attendanceService.getAttendanceByDate(attendanceDate); // 기존 구현된 함수 이용
+        List<Attendance> attendances = attendanceService.getAttendanceByMonth(attendanceDate);
 
-        // 조회된 시드 로그를 JSON 형태로 변환
+        // 조회된 출석 데이터를 JSON 형태로 변환
         Map<String, Object> response = new HashMap<>();
-        response.put("attendance_date", attendance.getAttendanceDate());
-        response.put("today_seed", attendance.getTodaySalaryPoint());
-        response.put("today_seed_earned", attendance.getTodaySalaryPoint_earned());
-        response.put("today_seed_used", attendance.getTodaySalaryPoint_used());
+        response.put("attendance_logs", attendances.stream().map(attendance -> {
+            Map<String, Object> log = new HashMap<>();
+            log.put("attendance_date", attendance.getAttendanceDate());
+            log.put("today_seed", attendance.getTodaySalaryPoint());
+            log.put("today_seed_earned", attendance.getTodaySalaryPoint_earned());
+            log.put("today_seed_used", attendance.getTodaySalaryPoint_used());
+            return log;
+        }).toList());
 
         return ResponseEntity.ok(response);
     }
