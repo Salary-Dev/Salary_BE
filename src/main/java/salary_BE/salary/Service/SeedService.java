@@ -34,6 +34,7 @@ public class SeedService {
        }
 
        attendance.setTodaySalaryPoint(previousSeed + seed_earned - seed_used);  // 기존에 변경
+        attendanceRepository.save(attendance);
 
         // 2. [회원] 테이블 샐러리 점수 변경 (total_seed)
         User user = userRepository.findById(currentUser.getId())
@@ -46,6 +47,7 @@ public class SeedService {
         }
 
         user.setSalaryPoint(previousTotalSeed + seed_earned - seed_used); // 기존에 변경
+        userRepository.save(user);
 
         return "success";
     }
