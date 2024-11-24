@@ -1,12 +1,14 @@
 package salary_BE.salary.Domain;
 
 import jakarta.persistence.*;
+import jakarta.websocket.server.ServerEndpoint;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 public class User {
 
     @Id @GeneratedValue
