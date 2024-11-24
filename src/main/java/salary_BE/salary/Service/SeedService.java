@@ -29,12 +29,25 @@ public class SeedService {
        Integer previousSeed = attendance.getTodaySalaryPoint();
 
        // 기존 테이블 초기화 시 시드의 값은 Null
-       if (previousSeed == null) {
+       if (previousSeed == null)
            previousSeed = 0; // 초기화
-       }
 
        attendance.setTodaySalaryPoint(previousSeed + seed_earned - seed_used);  // 기존에 변경
         attendanceRepository.save(attendance);
+
+        // 포인트 적립/사용 내역 저장
+        Integer previousSeed_earned = attendance.getTodaySalaryPoint_earned();
+        Integer previousSeed_used = attendance.getTodaySalaryPoint_used();
+
+        if (previousSeed_earned == null)
+            previousSeed_earned = 0; // 초기화
+
+        attendance.setTodaySalaryPoint_earned(previousSeed_earned + seed_earned);
+
+        if (previousSeed_used == null)
+            previousSeed_used = 0; // 초기화
+
+        attendance.setTodaySalaryPoint_used(previousSeed_used - seed_used);
 
         // 2. [회원] 테이블 샐러리 점수 변경 (total_seed)
         User user = userRepository.findById(currentUser.getId())
@@ -42,9 +55,8 @@ public class SeedService {
         Integer previousTotalSeed = user.getSalaryPoint();
 
         // 유저 처음 추가 시 시드의 값은 Null
-        if (previousTotalSeed == null) {
+        if (previousTotalSeed == null)
             previousTotalSeed = 0; // 초기화
-        }
 
         user.setSalaryPoint(previousTotalSeed + seed_earned - seed_used); // 기존에 변경
         userRepository.save(user);
