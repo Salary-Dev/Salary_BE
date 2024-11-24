@@ -13,6 +13,10 @@ import java.util.Optional;
 public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
 
     Attendance findByUserIdAndAttendanceDate(Long user_id, LocalDate attendance_date);
+
+    // 가장 최근 Attendance -> 스케줄러에서 사용됨
+    Optional<Attendance> findTopByUserIdOrderByAttendanceDateDesc(Long userId);
+
     List<Attendance> findAllByUserId(Long userId);
 
 }
