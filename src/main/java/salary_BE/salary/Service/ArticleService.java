@@ -8,20 +8,19 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import salary_BE.salary.DTO.ArticleDto;
-import salary_BE.salary.Domain.Article;
+import salary_BE.salary.Domain.*;
 
-import salary_BE.salary.Domain.ArticleWordMapping;
-import salary_BE.salary.Domain.Word;
-import salary_BE.salary.Repository.ArticleRepository;
-import salary_BE.salary.Repository.ArticleWordMappingRepository;
-import salary_BE.salary.Repository.WordRepository;
+import salary_BE.salary.Repository.*;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
@@ -36,6 +35,8 @@ public class ArticleService {
     private final ArticleRepository articleRepository;
     private final WordRepository wordRepository;
     private final ArticleWordMappingRepository articleWordMappingRepository;
+    private final AttendanceRepository attendanceRepository;
+    private final TodayStudyRepository todayStudyRepository;
 
     @Value("${X-Naver-Client-Id}")
     private String clientId;
@@ -163,4 +164,46 @@ public class ArticleService {
             );
         }).collect(Collectors.toList());
     }
+
+    // 아티클 학습 여부
+    @Transactional
+    public void completeArticle(boolean article, User user) {
+
+        LocalDate todayDate = getCurrentDate();
+
+        // user_id + attendance_date로 검색 후 없으면 정보 초기화
+        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(user.getId(), todayDate);
+        if (attendance == null) {
+            attendance = new Attendance();
+            // 1. 출석률 테이블 [attendance_date] 속성에 학습 날짜 저장
+            attendance.setAttendanceDate(todayDate);
+            attendance.setUser(user); // 유저 정보 추가
+            attendance.setAttendanceState(0); // 학습 상태 초기화
+            attendance = attendanceRepository.save(attendance);
+        }
+
+        // 오늘 학습 정보 가져오기 없으면 정보 초기화
+        TodayStudy todayStudy = todayStudyRepository.findByAttendanceId(attendance.getId());
+        if (todayStudy == null) {
+            todayStudy = new TodayStudy();
+            todayStudy.setAttendance(attendance); // 출석률 테이블과 연결
+            todayStudy.setArticle(false); // 아티클 학습 여부 초기화
+            todayStudy = todayStudyRepository.save(todayStudy);
+        }
+
+
+        // 2. 오늘 학습 테이블 [아티클] 속성에 학습 여부 반영
+        todayStudy.setTrend(article);
+        todayStudyRepository.save(todayStudy); // 학습 상태 저장
+
+        int currentState = attendance.getAttendanceState();
+        // 3. 아티클 학습 시 출석률 테이블 [attendance_state] 속성 + 1
+        attendance.setAttendanceState(currentState + 1);
+    }
+
+    // 오늘 날짜 가져오기
+    private LocalDate getCurrentDate() {
+        return LocalDate.now(ZoneId.of("Asia/Seoul"));
+    }
+
 }

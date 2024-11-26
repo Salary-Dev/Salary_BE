@@ -3,14 +3,21 @@ package salary_BE.salary.Controller;
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import salary_BE.salary.DTO.ArticleDto;
+import salary_BE.salary.DTO.CustomUserDetails;
+import salary_BE.salary.Domain.User;
 import salary_BE.salary.Domain.Word;
 import salary_BE.salary.Repository.WordRepository;
 import salary_BE.salary.Service.ArticleService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,4 +49,18 @@ public class ArticleController {
         List<ArticleDto> shorts = articleService.getRandomShorts();
         return ResponseEntity.ok(shorts);
     }
+
+    // 아티클 학습 여부
+    @PostMapping("shorts/update-status")
+    public ResponseEntity<Map<String, String>> updateArticle(@RequestParam boolean article, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        User user = userDetails.getUser();
+        articleService.completeArticle(article, user);
+
+        // 상태 업데이트 성공 반환
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        return ResponseEntity.ok(response);
+    }
+
 }
