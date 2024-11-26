@@ -1,19 +1,37 @@
 package salary_BE.salary.Domain;
 
 import jakarta.persistence.*;
+import jakarta.websocket.server.ServerEndpoint;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
 @Entity
-@Getter
+@Getter @Setter
 public class User {
 
-    @Id @GeneratedValue
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
+    @Column(nullable = false)
+    private String username;
+
+    @Column(nullable = false, unique = true)
+    private String loginId;
+
+    @Column(nullable = false)
+    private String password;
+
     private String nickname;
+
+    private Integer age;
+
+    private String gender;
+
+    private String role;
 
     private Integer salaryPoint;
 

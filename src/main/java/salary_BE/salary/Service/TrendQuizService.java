@@ -96,17 +96,16 @@ public class TrendQuizService {
 
     // 트렌드 퀴즈 학습 여부
     @Transactional
-    public void completeTrendQuiz(boolean trend) {
-        User currentUser = userService.getCurrentUser(); // 사용자 식별
+    public void completeTrendQuiz(boolean trend, User user) {
         LocalDate todayDate = getCurrentDate();
 
         // user_id + attendance_date로 검색 후 없으면 정보 초기화
-        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(currentUser.getId(), todayDate);
+        Attendance attendance = attendanceRepository.findByUserIdAndAttendanceDate(user.getId(), todayDate);
         if (attendance == null) {
             attendance = new Attendance();
             // 1. 출석률 테이블 [attendance_date] 속성에 학습 날짜 저장
             attendance.setAttendanceDate(todayDate);
-            attendance.setUser(currentUser); // 유저 정보 추가
+            attendance.setUser(user); // 유저 정보 추가
             attendance.setAttendanceState(0); // 학습 상태 초기화
             attendance = attendanceRepository.save(attendance);
         }

@@ -25,7 +25,7 @@ public class AttendanceScheduler {
     private final TodayStudyRepository todayStudyRepository;
     private final UserService userService;
 
-    // 매일 자정 (00:00)에 실행
+     // 매일 자정 (00:00)에 실행
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
     public void initializeDailyAttendance() {
@@ -34,15 +34,6 @@ public class AttendanceScheduler {
 
         // 모든 사용자에 대한 튜플 추가 및 초기화
         userService.getAllUsers().forEach(user -> {
-
-            // 마지막 Attendnace 기준
-            Attendance lastAttendance = attendanceRepository
-                    .findTopByUserIdOrderByAttendanceDateDesc(user.getId())
-                    .orElse(null);
-
-            // 학습할 단어 변경
-            Long lastWordId = (lastAttendance != null) ? lastAttendance.getLastWordId() : 0L;
-
             // 1. Attendance 초기화
             Attendance attendance = new Attendance();
             attendance.setAttendanceDate(todayDate);
