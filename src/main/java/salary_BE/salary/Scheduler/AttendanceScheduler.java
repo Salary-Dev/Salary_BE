@@ -48,7 +48,7 @@ public class AttendanceScheduler {
             attendance.setAttendanceDate(todayDate);
             attendance.setUser(user);
             attendance.setAttendanceState(0);
-            attendance.setLastWordId(lastWordId + 1);
+            attendance.setLastWordId(lastWordId + 1);  // 학습 단어 넘어감
             attendance = attendanceRepository.save(attendance);
 
             // 2. TodayStudy 초기화
