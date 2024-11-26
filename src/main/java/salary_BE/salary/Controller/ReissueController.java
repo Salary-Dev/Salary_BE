@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 import salary_BE.salary.JWT.JWTUtil;
+import salary_BE.salary.JWT.LoginFilter;
 
 @RestController
 @RequiredArgsConstructor
@@ -55,11 +56,21 @@ public class ReissueController {
 
         //make new JWT
         String newAccess = jwtUtil.createJwt("access", loginId, role, 600000L);
+        String newRefresh = jwtUtil.createJwt("refresh", loginId, role, 86400000L);
 
         //response
         response.setHeader("access", newAccess);
-
+        response.addCookie(createCookie("refresh", newRefresh));
         return new ResponseEntity<>(HttpStatus.OK);
 
+    }
+
+    private Cookie createCookie(String key, String value) {
+        Cookie cookie = new Cookie(key, value);
+        cookie.setMaxAge(24*60*60);
+        cookie.setSecure(true);
+        cookie.setHttpOnly(true);
+
+        return cookie;
     }
 }
