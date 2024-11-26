@@ -57,8 +57,9 @@ public class WordLikeService {
 
 
     // 단어장 조회
-    public List<Map<String, Object>> getUserLikedWords(User user) {
+    public List<Map<String, Object>> getUserLikedWords(String loginId) {
 
+        User user = userRepository.findByLoginId(loginId);
         // 현재 사용자가 저장한 단어 중 word_bookmark가 1인 것 조회
         return wordLikeRepository.findByUserAndWordBookmark(user, true).stream()
                 .filter(wordLike -> wordLike.getLikeDate() != null) // like_date가 null인 데이터 제외 (db 재설정 시 삭제해도 되는 조건)
