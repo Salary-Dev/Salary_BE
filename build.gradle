@@ -54,6 +54,12 @@ dependencies {
 	implementation 'jakarta.validation:jakarta.validation-api:3.0.2'
 	implementation 'org.hibernate.validator:hibernate-validator:8.0.0.Final'
 
+	//구글 소셜로그인
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'com.google.api-client:google-api-client:1.32.1'
+	implementation 'com.google.oauth-client:google-oauth-client:1.32.1'
+	implementation 'com.google.http-client:google-http-client-jackson2:1.40.1'
+
 
 }
 
