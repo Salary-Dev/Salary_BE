@@ -78,14 +78,14 @@ public class UserController {
                 isNewUser = true;
             }
 
-            // JWT 발급
-            String token = jwtUtil.createJwt(user.getLoginId(), user.getRole(), 3600000L);
-
-
+            //토큰 생성
+            String access = jwtUtil.createJwt("access",email, user.getRole(), 600000L);
+            String refresh = jwtUtil.createJwt("refresh",email, user.getRole(), 86400000L);
 
             // 응답에 "isNewUser" 필드 추가
             return ResponseEntity.ok(Map.of(
-                    "token", token,
+                    "access", access,
+                    "refresh", refresh,
                     "isNewUser", isNewUser // 새 유저인지 클라이언트에 전달
             ));
         } catch (Exception e) {
