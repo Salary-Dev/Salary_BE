@@ -1,5 +1,6 @@
 package salary_BE.salary.Service;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import salary_BE.salary.DTO.ArticleDto;
@@ -7,6 +8,7 @@ import salary_BE.salary.DTO.WordmainDto;
 import salary_BE.salary.Domain.ArticleWordMapping;
 import salary_BE.salary.Domain.User;
 import salary_BE.salary.Domain.Word;
+import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Repository.WordLikeRepository;
 import salary_BE.salary.Repository.WordRepository;
 import salary_BE.salary.Repository.ArticleWordMappingRepository;
@@ -17,12 +19,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class WordService {
 
     private final WordRepository wordRepository;
     private final ArticleWordMappingRepository articleWordMappingRepository;
     private final WordLikeRepository wordLikeRepository;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     public Optional<WordmainDto> getWordById(Long wordId, User user) {
         Optional<Word> word = wordRepository.findById(wordId);
@@ -39,8 +43,9 @@ public class WordService {
                     ))
                     .collect(Collectors.toList());
 
+
             // 현재 사용자가 이 단어를 북마크했는지 확인
-            boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(user, wordEntity);
+            boolean isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), wordEntity);
             return Optional.of(new WordmainDto(
                     wordEntity.getId(),
                     wordEntity.getWord(),
@@ -70,7 +75,7 @@ public class WordService {
                     ))
                     .collect(Collectors.toList());
 
-            boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(user, wordEntity);
+            boolean isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), wordEntity);
             return Optional.of(new WordmainDto(
                     wordEntity.getId(),
                     wordEntity.getWord(),
@@ -102,7 +107,7 @@ public class WordService {
                             .collect(Collectors.toList());
 
                     // 현재 사용자가 이 단어를 북마크했는지 확인
-                    boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(user, word);
+                    boolean isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), word);
 
                     return new WordmainDto(
                             word.getId(),
@@ -136,7 +141,7 @@ public class WordService {
                             .collect(Collectors.toList());
 
                     // 현재 사용자가 이 단어를 북마크했는지 확인
-                    boolean isSavedByUser = wordLikeRepository.existsByUserAndWordAndWordBookmarkTrue(user, word);
+                    boolean isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), word);
 
                     return new WordmainDto(
                             word.getId(),
