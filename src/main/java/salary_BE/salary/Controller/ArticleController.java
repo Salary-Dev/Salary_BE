@@ -33,4 +33,10 @@ public class ArticleController {
         }
         return "단어별 2개의 기사를 성공적으로 불러왔습니다.";
     }
+
+    // 아티클 기능 구현
+    @GetMapping("/shorts")
+    public String shorts() {
+
+    }
 }
