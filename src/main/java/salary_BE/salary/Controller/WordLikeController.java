@@ -28,6 +28,11 @@ public class WordLikeController {
     public ResponseEntity<Map<String, String>> addWordToWordBook(@RequestParam Long word_id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
         User user = userDetails.getUser();
+        if (user == null) {
+            throw new IllegalArgumentException("User가 없습니다.");
+        }else if(word_id==null){
+            throw new IllegalArgumentException("word가 없습니다.");
+        }
 
         wordLikeService.addWordToWordBook(word_id, user);
 
@@ -40,9 +45,9 @@ public class WordLikeController {
     @GetMapping("/wordbook")
     public ResponseEntity<List<Map<String, Object>>> getUserLikedWords(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        User user = userDetails.getUser();
+        String loginId = userDetails.getUser().getLoginId();
 
-        List<Map<String, Object>> likedWords = wordLikeService.getUserLikedWords(user);
+        List<Map<String, Object>> likedWords = wordLikeService.getUserLikedWords(loginId);
 
         return ResponseEntity.ok(likedWords);
     }
