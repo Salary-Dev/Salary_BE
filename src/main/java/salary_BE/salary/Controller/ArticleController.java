@@ -2,8 +2,10 @@ package salary_BE.salary.Controller;
 
 import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import salary_BE.salary.DTO.ArticleDto;
 import salary_BE.salary.Domain.Word;
 import salary_BE.salary.Repository.WordRepository;
 import salary_BE.salary.Service.ArticleService;
@@ -36,7 +38,8 @@ public class ArticleController {
 
     // 아티클 기능 구현
     @GetMapping("/shorts")
-    public String shorts() {
-
+    public ResponseEntity<List<ArticleDto>> getShorts() {
+        List<ArticleDto> shorts = articleService.getRandomShorts();
+        return ResponseEntity.ok(shorts);
     }
 }

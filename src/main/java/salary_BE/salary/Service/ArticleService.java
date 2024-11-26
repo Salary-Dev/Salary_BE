@@ -12,6 +12,7 @@ import org.springframework.web.client.RestTemplate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import salary_BE.salary.DTO.ArticleDto;
 import salary_BE.salary.Domain.Article;
 
 import salary_BE.salary.Domain.ArticleWordMapping;
@@ -26,6 +27,7 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -148,5 +150,18 @@ public class ArticleService {
             System.out.println("API 호출 중 오류 발생: " + e.getMessage());
             e.printStackTrace();
         }
+    }
+
+    // 아티클 기능 구현
+    public List<ArticleDto> getRandomShorts() {
+        List<Article> articles = articleRepository.findRandomArticles(10);
+        return articles.stream().map(article -> {
+            return new ArticleDto(
+                    article.getUrl(),
+                    article.getTitle(),
+                    // 이미지 가져오는 로직 추가
+                    article.getSource()
+            );
+        }).collect(Collectors.toList());
     }
 }
