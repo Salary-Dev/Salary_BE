@@ -34,7 +34,8 @@ public class WordService {
                     .stream()
                     .map(mapping -> new ArticleDto(
                             mapping.getArticle().getUrl(),
-                            mapping.getArticle().getTitle()
+                            mapping.getArticle().getTitle(),
+                            mapping.getArticle().getSource()
                     ))
                     .collect(Collectors.toList());
 
@@ -64,7 +65,8 @@ public class WordService {
                     .stream()
                     .map(mapping -> new ArticleDto(
                             mapping.getArticle().getUrl(),
-                            mapping.getArticle().getTitle()
+                            mapping.getArticle().getTitle(),
+                            mapping.getArticle().getSource()
                     ))
                     .collect(Collectors.toList());
 
@@ -94,7 +96,8 @@ public class WordService {
                             .stream()
                             .map(mapping -> new ArticleDto(
                                     mapping.getArticle().getUrl(),
-                                    mapping.getArticle().getTitle()
+                                    mapping.getArticle().getTitle(),
+                                    mapping.getArticle().getSource()
                             ))
                             .collect(Collectors.toList());
 
@@ -127,7 +130,8 @@ public class WordService {
                             .stream()
                             .map(mapping -> new ArticleDto(
                                     mapping.getArticle().getUrl(),
-                                    mapping.getArticle().getTitle()
+                                    mapping.getArticle().getTitle(),
+                                    mapping.getArticle().getSource()
                             ))
                             .collect(Collectors.toList());
 

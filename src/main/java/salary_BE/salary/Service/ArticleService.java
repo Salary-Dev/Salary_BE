@@ -159,7 +159,6 @@ public class ArticleService {
             return new ArticleDto(
                     article.getUrl(),
                     article.getTitle(),
-                    // 이미지 가져오는 로직 추가
                     article.getSource()
             );
         }).collect(Collectors.toList());
