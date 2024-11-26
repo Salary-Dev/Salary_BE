@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import salary_BE.salary.JWT.JWTFilter;
 import salary_BE.salary.JWT.JWTUtil;
 import salary_BE.salary.JWT.LoginFilter;
+import salary_BE.salary.Repository.RefreshRepository;
 
 import java.util.Arrays;
 
@@ -28,6 +29,7 @@ public class SecurityConfig {
     //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
     //AuthenticationManager Bean 등록
     @Bean
@@ -74,7 +76,7 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
 
         // 세션 정책: Stateless
         http.sessionManagement(session -> session

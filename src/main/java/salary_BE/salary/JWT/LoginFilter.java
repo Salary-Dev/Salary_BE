@@ -13,8 +13,11 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import salary_BE.salary.DTO.CustomUserDetails;
+import salary_BE.salary.Domain.Refresh;
+import salary_BE.salary.Repository.RefreshRepository;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.Iterator;
 
 @RequiredArgsConstructor
@@ -22,6 +25,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
 
     private final AuthenticationManager authenticationManager;
     private final JWTUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
 
     @Override
@@ -54,9 +58,12 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         GrantedAuthority authority = authoritiesIterator.next();
         String role = authority.getAuthority();
 
-        //토큰 생성
+        //토큰 생성4
         String access = jwtUtil.createJwt("access",username, role, 600000L);
-        String refresh = jwtUtil.createJwt("refresh",username, role, 86400000L);
+        String refresh = jwtUtil.createJwt("refresh",username, role, 864000000L);
+
+        //refresh 토큰 저장
+        addRefresh(username, refresh, 86400000L);
 
         //응답 설정
         response.setHeader("access", access);
@@ -70,6 +77,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         response.setStatus(401);
     }
 
+    private void addRefresh(String username, String refresh, Long expiredMs) {
+
+        Date date = new Date(System.currentTimeMillis() + expiredMs);
+
+        Refresh refreshEntity = new Refresh();
+        refreshEntity.setUsername(username);
+        refreshEntity.setRefresh(refresh);
+        refreshEntity.setExpiration(date.toString());
+
+        refreshRepository.save(refreshEntity);
+    }
     private Cookie createCookie(String key, String value) {
 
         Cookie cookie = new Cookie(key, value);
