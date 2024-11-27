@@ -22,7 +22,7 @@ public class CustomUserDetailsService implements UserDetailsService {
         User userData = userRepository.findByLoginId(loginId);
 
         if (userData != null) {
-
+            System.out.println("Password from DB: " + userData.getPassword());
             //UserDetails에 담아서 return하면 AutneticationManager가 검증 함
             return new CustomUserDetails(userData);
         }
