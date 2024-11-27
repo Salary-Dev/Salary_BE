@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -41,6 +42,8 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
+
+
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 
@@ -66,7 +69,8 @@ public class SecurityConfig {
 
         // 인증 및 권한 설정
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/join", "existId").permitAll() // 인증 없이 접근 가능한 경로
+                .requestMatchers("/login", "/", "/join", "/existId").permitAll() // 인증 없이 접근 가능한 경로
+                .requestMatchers(HttpMethod.GET, "/words").hasAuthority("ROLE_USER")
                 .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
 

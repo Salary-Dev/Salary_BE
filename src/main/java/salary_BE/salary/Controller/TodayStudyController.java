@@ -7,7 +7,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import salary_BE.salary.DTO.CustomUserDetails;
 import salary_BE.salary.Domain.TodayStudy;
+import salary_BE.salary.Domain.User;
 import salary_BE.salary.Repository.TodayStudyRepository;
+import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Service.TodayStudyService;
 
 import java.util.HashMap;
@@ -18,12 +20,15 @@ import java.util.Map;
 public class TodayStudyController {
 
     private final TodayStudyService todayStudyService;
+    private final UserRepository userRepository;
 
     // 오늘 학습 과목 조회
     @GetMapping("attendance/today")
     public ResponseEntity<Map<String, Boolean>> getTodayStudyStatus(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        Long userId = userDetails.getUser().getId();
-        Map<String, Boolean> response = todayStudyService.getTodayStudyStatus(userId);
+        String loginId = userDetails.getUsername();
+        User user = userRepository.findByLoginId(loginId);
+
+        Map<String, Boolean> response = todayStudyService.getTodayStudyStatus(user.getId());
         return ResponseEntity.ok(response);
     }
 }

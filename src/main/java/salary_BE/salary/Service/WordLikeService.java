@@ -20,7 +20,7 @@ import static org.apache.tomcat.util.http.FastHttpDateFormat.getCurrentDate;
 
 @Service
 @RequiredArgsConstructor
-
+@Transactional
 public class WordLikeService {
 
     private final WordRepository wordRepository;

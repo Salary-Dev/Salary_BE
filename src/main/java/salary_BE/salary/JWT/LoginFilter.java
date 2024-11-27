@@ -9,6 +9,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import salary_BE.salary.DTO.CustomUserDetails;
 
@@ -28,7 +29,7 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         //클라이언트 요청에서 username, password 추출
         String loginId = obtainUsername(request);
         String password = obtainPassword(request);
-        System.out.println("loginId = " + loginId);
+        System.out.println("Login attempt: loginId = " + loginId + ", password = " + password);
 
         //스프링 시큐리티에서 username과 password를 검증하기 위해서는 token에 담아야 함
         UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(loginId, password, null);
@@ -59,6 +60,17 @@ public class LoginFilter extends UsernamePasswordAuthenticationFilter {
         String token = jwtUtil.createJwt(loginId, role, 60000*60*10L);
 
         response.addHeader("Authorization", "Bearer " + token);
+        // SecurityContextHolder에 인증 정보 저장
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+        // 인증 정보 확인 (디버깅용)
+        Authentication storedAuthentication = SecurityContextHolder.getContext().getAuthentication();
+        if (storedAuthentication == null || !(storedAuthentication.getPrincipal() instanceof CustomUserDetails)) {
+            throw new IllegalStateException("SecurityContext does not contain valid authentication");
+        }
+
+        CustomUserDetails storedUserDetails = (CustomUserDetails) storedAuthentication.getPrincipal();
+        System.out.println("User from SecurityContext: " + storedUserDetails.getUser().getLoginId());
     }
 
     //로그인 실패시 실행하는 메소드
