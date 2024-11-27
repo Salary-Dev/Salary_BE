@@ -12,12 +12,15 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.security.web.SecurityFilterChain;
+import salary_BE.salary.JWT.CustomLogoutFilter;
 import salary_BE.salary.JWT.JWTFilter;
 import salary_BE.salary.JWT.JWTUtil;
 import salary_BE.salary.JWT.LoginFilter;
+import salary_BE.salary.Repository.RefreshRepository;
 
 import java.util.Arrays;
 
@@ -29,6 +32,7 @@ public class SecurityConfig {
     //AuthenticationManager가 인자로 받을 AuthenticationConfiguraion 객체 생성자 주입
     private final AuthenticationConfiguration authenticationConfiguration;
     private final JWTUtil jwtUtil;
+    private final RefreshRepository refreshRepository;
 
     //AuthenticationManager Bean 등록
     @Bean
@@ -69,8 +73,8 @@ public class SecurityConfig {
 
         // 인증 및 권한 설정
         http.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/", "/join", "/existId").permitAll() // 인증 없이 접근 가능한 경로
-                .requestMatchers(HttpMethod.GET, "/words").hasAuthority("ROLE_USER")
+                .requestMatchers("/login", "/", "/join", "/existId", "/reissue").permitAll() // 인증 없이 접근 가능한 경로
+
                 .anyRequest().authenticated() // 그 외 요청은 인증 필요
         );
 
@@ -78,7 +82,10 @@ public class SecurityConfig {
                 .addFilterBefore(new JWTFilter(jwtUtil), LoginFilter.class);
 
         http
-                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil), UsernamePasswordAuthenticationFilter.class);
+                .addFilterAt(new LoginFilter(authenticationManager(authenticationConfiguration), jwtUtil, refreshRepository), UsernamePasswordAuthenticationFilter.class);
+
+        http
+                .addFilterBefore(new CustomLogoutFilter(jwtUtil, refreshRepository), LogoutFilter.class);
 
         // 세션 정책: Stateless
         http.sessionManagement(session -> session
