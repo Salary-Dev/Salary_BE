@@ -35,6 +35,7 @@ public class UserService {
         userData.setAge(joinDTO.getAge());
         userData.setGender(joinDTO.getGender());
         userData.setNickname(joinDTO.getNickname());
+        userData.setSalaryPoint(0);
 
         userRepository.save(userData);
     }
