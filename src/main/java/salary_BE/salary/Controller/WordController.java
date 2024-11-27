@@ -2,6 +2,7 @@ package salary_BE.salary.Controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -25,10 +26,13 @@ public class WordController {
 
     @GetMapping("/words")
     public WordmainDto getWordById(@RequestParam Long word_id, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        String loginId = userDetails.getUser().getLoginId();
-        User user = userRepository.findByLoginId(loginId);
-        System.out.println("User: " + user); // user 객체 출력
-        System.out.println("Password: " + user.getPassword());
+
+        User user = null;
+
+        // 인증된 사용자가 있는 경우에만 User 객체 설정
+        if (userDetails != null) {
+            user = userDetails.getUser();
+        }
         return wordService.getWordById(word_id, user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 word_id에 맞는 데이터가 없습니다."));
     }

@@ -1,7 +1,6 @@
 package salary_BE.salary.Service;
 
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import salary_BE.salary.DTO.JoinDto;
@@ -10,6 +9,8 @@ import salary_BE.salary.Exception.UsernameAlreadyExistsException;
 import salary_BE.salary.Repository.UserRepository;
 
 import java.util.List;
+
+import static com.amazonaws.services.ec2.model.LaunchTemplateHttpTokensState.Optional;
 
 @Service
 @AllArgsConstructor
@@ -45,4 +46,5 @@ public class UserService {
     public List<User> getAllUsers() {
         return userRepository.findAll(); // 모든 유저 반환
     }
+
 }

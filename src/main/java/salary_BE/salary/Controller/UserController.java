@@ -3,6 +3,7 @@ package salary_BE.salary.Controller;
 import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -120,5 +121,4 @@ public class UserController {
             return ResponseEntity.badRequest().body("Failed to update user information: " + e.getMessage());
         }
     }
-
 }

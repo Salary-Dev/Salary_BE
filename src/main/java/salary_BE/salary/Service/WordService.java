@@ -29,38 +29,48 @@ public class WordService {
     private final UserRepository userRepository;
 
     public Optional<WordmainDto> getWordById(Long wordId, User user) {
-        Optional<Word> word = wordRepository.findById(wordId);
+        Optional<Word> wordOptional = wordRepository.findById(wordId);
 
-
-        if (word.isPresent()) {
-            Word wordEntity = word.get();
-            List<ArticleDto> articles = articleWordMappingRepository.findByWord(word.get())
-                    .stream()
-                    .map(mapping -> new ArticleDto(
-                            mapping.getArticle().getUrl(),
-                            mapping.getArticle().getTitle(),
-                            mapping.getArticle().getSource()
-                    ))
-                    .collect(Collectors.toList());
-
-
-            // 현재 사용자가 이 단어를 북마크했는지 확인
-            boolean isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), wordEntity);
-            return Optional.of(new WordmainDto(
-                    wordEntity.getId(),
-                    wordEntity.getWord(),
-                    wordEntity.getMean(),
-                    wordEntity.getStory1(),
-                    wordEntity.getStory2(),
-                    wordEntity.getStory3(),
-                    wordEntity.getExample(),
-                    articles,
-                    isSavedByUser
-            ));
+        if (wordOptional.isEmpty()) {
+            System.out.println("Word not found for id: " + wordId);
+            return Optional.empty();
         }
-        return Optional.empty();
-    }
 
+        Word wordEntity = wordOptional.get();
+        List<ArticleDto> articles = articleWordMappingRepository.findByWord(wordEntity)
+                .stream()
+                .map(mapping -> new ArticleDto(
+                        mapping.getArticle().getUrl(),
+                        mapping.getArticle().getTitle(),
+                        mapping.getArticle().getSource()
+                ))
+                .collect(Collectors.toList());
+
+        boolean isSavedByUser = false;
+        if (user != null) {
+            try {
+                isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), wordEntity);
+            } catch (Exception e) {
+                System.out.println("Error checking bookmark status: " + e.getMessage());
+            }
+        } else {
+            System.out.println("User is null. Skipping bookmark check.");
+        }
+
+        WordmainDto wordmainDto = new WordmainDto(
+                wordEntity.getId(),
+                wordEntity.getWord(),
+                wordEntity.getMean(),
+                wordEntity.getStory1(),
+                wordEntity.getStory2(),
+                wordEntity.getStory3(),
+                wordEntity.getExample(),
+                articles,
+                isSavedByUser
+        );
+
+        return Optional.of(wordmainDto);
+    }
     public Optional<WordmainDto> getWordByword(String wordSearch, User user) {
         Optional<Word> word = wordRepository.findByWord(wordSearch);
 
