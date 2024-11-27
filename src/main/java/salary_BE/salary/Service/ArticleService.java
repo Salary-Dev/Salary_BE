@@ -169,7 +169,6 @@ public class ArticleService {
     // 아티클 학습 여부
     @Transactional
     public void completeArticle(boolean article, User user) {
-
         LocalDate todayDate = getCurrentDate();
 
         // user_id + attendance_date로 검색 후 없으면 정보 초기화
@@ -188,7 +187,7 @@ public class ArticleService {
         if (todayStudy == null) {
             todayStudy = new TodayStudy();
             todayStudy.setAttendance(attendance); // 출석률 테이블과 연결
-            todayStudy.setArticle(false); // 아티클 학습 여부 초기화
+            todayStudy.setArticle(false); // 트렌드 퀴즈 학습 여부 초기화
             todayStudy = todayStudyRepository.save(todayStudy);
         }
 

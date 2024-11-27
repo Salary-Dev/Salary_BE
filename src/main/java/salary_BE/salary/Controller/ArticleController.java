@@ -12,6 +12,7 @@ import salary_BE.salary.DTO.ArticleDto;
 import salary_BE.salary.DTO.CustomUserDetails;
 import salary_BE.salary.Domain.User;
 import salary_BE.salary.Domain.Word;
+import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Repository.WordRepository;
 import salary_BE.salary.Service.ArticleService;
 
@@ -24,6 +25,7 @@ import java.util.Map;
 public class ArticleController {
     private final ArticleService articleService;
     private final WordRepository wordRepository;
+    private final UserRepository userRepository;
 
     @GetMapping("/fetch-finance-news")
     public String fetchFinanceNews() {
@@ -54,7 +56,8 @@ public class ArticleController {
     @PostMapping("shorts/update-status")
     public ResponseEntity<Map<String, String>> updateArticle(@RequestParam boolean article, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
-        User user = userDetails.getUser();
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByLoginId(loginId);
         articleService.completeArticle(article, user);
 
         // 상태 업데이트 성공 반환
