@@ -15,7 +15,7 @@ public class WordLike {
     @Column(name = "user_word_mapping_id")
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

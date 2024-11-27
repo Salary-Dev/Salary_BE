@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import salary_BE.salary.DTO.CustomUserDetails;
 import salary_BE.salary.Domain.Attendance;
 import salary_BE.salary.Domain.User;
+import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Service.AttendanceService;
 import salary_BE.salary.Service.SeedService;
 import salary_BE.salary.Service.UserService;
@@ -22,11 +23,14 @@ public class SeedController {
     private final SeedService seedService;
     private final AttendanceService attendanceService;
     private final UserService userService;
+    private final UserRepository userRepository;
 
     // 시드 변경
     @PatchMapping("/seed/update")
     public ResponseEntity<Map<String, String>> updateSeed(@RequestBody Map<String, Integer> requestBody, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        User user = userDetails.getUser();
+
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByLoginId(loginId);
 
         Integer seed_earned = requestBody.get("seed_earned");
         Integer seed_used = requestBody.get("seed_used");
@@ -41,8 +45,9 @@ public class SeedController {
     // 시드 조회
     @GetMapping("/seed")
     public ResponseEntity<Map<String, Object>> getSeedLog(@RequestParam("date") String attendanceDate,@AuthenticationPrincipal CustomUserDetails userDetails) {
-        User user = userDetails.getUser();
-        List<Attendance> attendances = attendanceService.getAttendanceByMonth(attendanceDate, user);
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByLoginId(loginId);
+        List<Attendance> attendances = attendanceService.getAttendanceByMonth(attendanceDate, user.getId());
 
 
         // total_seed 조회를 위한 현재 사용자 가져오기

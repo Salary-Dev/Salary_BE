@@ -9,6 +9,7 @@ import salary_BE.salary.DTO.CustomUserDetails;
 import salary_BE.salary.DTO.WordmainDto;
 import salary_BE.salary.Domain.User;
 import salary_BE.salary.Domain.Word;
+import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Repository.WordRepository;
 import salary_BE.salary.Service.WordService;
 
@@ -20,10 +21,14 @@ import java.util.Optional;
 public class WordController {
 
     private final WordService wordService;
+    private final UserRepository userRepository;
 
     @GetMapping("/words")
     public WordmainDto getWordById(@RequestParam Long word_id, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        User user = userDetails.getUser();
+        String loginId = userDetails.getUser().getLoginId();
+        User user = userRepository.findByLoginId(loginId);
+        System.out.println("User: " + user); // user 객체 출력
+        System.out.println("Password: " + user.getPassword());
         return wordService.getWordById(word_id, user)
                 .orElseThrow(() -> new IllegalArgumentException("해당 word_id에 맞는 데이터가 없습니다."));
     }

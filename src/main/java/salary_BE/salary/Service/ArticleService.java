@@ -29,6 +29,7 @@ import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
+
 public class ArticleService {
 
     private final ArticleRepository articleRepository;

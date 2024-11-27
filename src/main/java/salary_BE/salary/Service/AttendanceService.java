@@ -36,7 +36,7 @@ public class AttendanceService {
     }
 
     // 월별 출석률 조회 (시드 조회에 사용)
-    public List<Attendance> getAttendanceByMonth(String attendanceDate, User user) {
+    public List<Attendance> getAttendanceByMonth(String attendanceDate, Long userId) {
 
         YearMonth yearMonth;
         try {
@@ -50,14 +50,13 @@ public class AttendanceService {
         LocalDate endDate = yearMonth.atEndOfMonth(); // 종료일
 
         // AttendanceRepository를 사용하여 월 범위 데이터 조회
-        return attendanceRepository.findAllByUserIdAndAttendanceDateBetween(user.getId(), startDate, endDate);
+        return attendanceRepository.findAllByUserIdAndAttendanceDateBetween(userId, startDate, endDate);
     }
 
 
 
     // 오늘 학습 단어 조회
     public Long getTodayWord(Long userId) {
-
         // current User의 userId와 매칭되는 Attendance 데이터 가져오기
         List<Attendance> userAttendances = attendanceRepository.findAllByUserId(userId);
 
