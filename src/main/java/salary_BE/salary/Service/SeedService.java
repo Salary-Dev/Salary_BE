@@ -31,6 +31,10 @@ public class SeedService {
        if (previousSeed == null)
            previousSeed = 0; // 초기화
 
+        // 사용하려는 시드가 가지고 있는 거보다 많은 경우 예외 처리
+        if (previousSeed - seed_used < 0)
+            throw new IllegalArgumentException("시드 부족");
+
        attendance.setTodaySalaryPoint(previousSeed + seed_earned - seed_used);  // 기존에 변경
         attendanceRepository.save(attendance);
 
