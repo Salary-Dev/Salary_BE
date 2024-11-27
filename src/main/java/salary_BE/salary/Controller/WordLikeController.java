@@ -31,8 +31,10 @@ public class WordLikeController {
     @PostMapping("/wordbook")
     public ResponseEntity<Map<String, String>> addWordToWordBook(@RequestParam Long word_id, @AuthenticationPrincipal CustomUserDetails userDetails) {
 
+
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByLoginId(loginId);
+
         if (user == null) {
             throw new IllegalArgumentException("User가 없습니다.");
         }else if(word_id==null){
@@ -51,7 +53,9 @@ public class WordLikeController {
     public ResponseEntity<List<Map<String, Object>>> getUserLikedWords(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
 
+
         String loginId = userDetails.getUser().getLoginId();
+
 
         List<Map<String, Object>> likedWords = wordLikeService.getUserLikedWords(loginId);
 
