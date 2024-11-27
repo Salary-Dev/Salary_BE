@@ -194,7 +194,7 @@ public class ArticleService {
 
 
         // 2. 오늘 학습 테이블 [아티클] 속성에 학습 여부 반영
-        todayStudy.setTrend(article);
+        todayStudy.setArticle(article);
         todayStudyRepository.save(todayStudy); // 학습 상태 저장
 
         int currentState = attendance.getAttendanceState();
