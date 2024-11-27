@@ -26,4 +26,7 @@ public interface WordLikeRepository extends JpaRepository<WordLike, Long> {
 
     // 특정 단어를 북마크했는지 확인
     boolean existsByUserAndWordAndWordBookmarkTrue(User user, Word word);
+
+    // userId를 사용하는 새로운 메서드 추가
+    boolean existsByUserIdAndWordAndWordBookmarkTrue(Long userId, Word word);
 }

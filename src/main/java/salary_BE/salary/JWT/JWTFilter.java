@@ -52,7 +52,6 @@ public class JWTFilter extends OncePerRequestFilter {
 
         if (!category.equals("access")) {
 
-
             //responsebody
             PrintWriter writer = response.getWriter();
             writer.print("invalid access token");
@@ -75,6 +74,8 @@ public class JWTFilter extends OncePerRequestFilter {
         Authentication authToken = new UsernamePasswordAuthenticationToken(customUserDetails, null, customUserDetails.getAuthorities());
         //세션에 사용자 등록
         SecurityContextHolder.getContext().setAuthentication(authToken);
+        System.out.println("Authentication set in SecurityContextHolder: " + authToken);
+
 
         filterChain.doFilter(request, response);
 

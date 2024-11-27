@@ -8,4 +8,5 @@ import lombok.Getter;
 public class ArticleDto {
     private String url;
     private String title;
+    private String source;
 }
