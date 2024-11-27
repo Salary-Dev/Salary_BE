@@ -140,8 +140,11 @@ public class WordService {
                             ))
                             .collect(Collectors.toList());
 
-                    // 현재 사용자가 이 단어를 북마크했는지 확인
-                    boolean isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), word);
+                    // 인증되지 않은 사용자는 북마크 여부를 false로 처리
+                    boolean isSavedByUser = false;
+                    if (user != null) {
+                        isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), word);
+                    }
 
                     return new WordmainDto(
                             word.getId(),
@@ -153,7 +156,6 @@ public class WordService {
                             word.getExample(),
                             articles,
                             isSavedByUser
-
                     );
                 })
                 .collect(Collectors.toList());

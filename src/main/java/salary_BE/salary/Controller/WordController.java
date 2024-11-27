@@ -35,7 +35,14 @@ public class WordController {
 
     @GetMapping("/words/search")
     public List<WordmainDto> getWordByword(@RequestParam String word, @AuthenticationPrincipal CustomUserDetails userDetails) {
-        User user = userDetails.getUser();
+        User user = null;
+
+        // 인증된 사용자만 User 객체 가져오기 (search 의 경우 인증 필요 없음)
+        if (userDetails != null) {
+            user = userDetails.getUser();
+        }
+
+        // 단어 검색 처리
         List<WordmainDto> results = wordService.getWordsByWordContaining(word, user);
 
         if (results.isEmpty()) {
