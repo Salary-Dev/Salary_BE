@@ -47,4 +47,8 @@ public class UserService {
         return userRepository.findAll(); // 모든 유저 반환
     }
 
+    // 새로운 사용자 생성
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
 }
