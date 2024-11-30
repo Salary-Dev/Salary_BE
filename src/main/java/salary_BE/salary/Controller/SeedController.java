@@ -49,10 +49,7 @@ public class SeedController {
         User user = userRepository.findByLoginId(loginId);
         List<Attendance> attendances = attendanceService.getAttendanceByMonth(attendanceDate, user.getId());
 
-
-        // total_seed 조회를 위한 현재 사용자 가져오기
-        User currentUser = userService.getCurrentUser();
-        Integer totalSeed = currentUser.getSalaryPoint();
+        Integer totalSeed = user.getSalaryPoint();
 
         // 조회된 출석 데이터를 JSON 형태로 변환
         Map<String, Object> response = new HashMap<>();
