@@ -38,6 +38,7 @@ public class UserService {
         userData.setSalaryPoint(0);
 
         userRepository.save(userData);
+        System.out.println("유저 추가 완료");
     }
     public User getCurrentUser() {  // 현재 mock 데이터 반환
         return userRepository.findById(1L)
