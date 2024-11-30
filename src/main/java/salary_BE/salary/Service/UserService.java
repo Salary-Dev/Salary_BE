@@ -35,8 +35,10 @@ public class UserService {
         userData.setAge(joinDTO.getAge());
         userData.setGender(joinDTO.getGender());
         userData.setNickname(joinDTO.getNickname());
+        userData.setSalaryPoint(0);
 
         userRepository.save(userData);
+        System.out.println("유저 추가 완료");
     }
     public User getCurrentUser() {  // 현재 mock 데이터 반환
         return userRepository.findById(1L)
@@ -47,4 +49,8 @@ public class UserService {
         return userRepository.findAll(); // 모든 유저 반환
     }
 
+    // 새로운 사용자 생성
+    public User createUser(User user) {
+        return userRepository.save(user);
+    }
 }

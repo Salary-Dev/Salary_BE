@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import salary_BE.salary.Controller.AttendanceController;
 import salary_BE.salary.Domain.Attendance;
 import salary_BE.salary.Domain.TodayStudy;
+import salary_BE.salary.Domain.User;
 import salary_BE.salary.Repository.AttendanceRepository;
 import salary_BE.salary.Repository.TodayStudyRepository;
 import salary_BE.salary.Service.UserService;
@@ -62,5 +63,30 @@ public class AttendanceScheduler {
 
         System.out.println("정각에 Attendance와 TodayStudy가 초기화: " + todayDate);
 
+    }
+
+    // 유저 추가 시 학습률 및 오늘 학습 테이블 초기화
+    @Transactional
+    public void initializeAttendanceForNewUser(User user) {
+
+        LocalDate todayDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
+
+        // Attendance 초기화
+        Attendance attendance = new Attendance();
+        attendance.setAttendanceDate(todayDate);
+        attendance.setUser(user);
+        attendance.setAttendanceState(0);
+        attendance.setLastWordId(1L);  // 초기 단어 ID
+        Attendance savedAttendance = attendanceRepository.save(attendance);
+
+        // TodayStudy 초기화
+        TodayStudy todayStudy = new TodayStudy();
+        todayStudy.setAttendance(savedAttendance);
+        todayStudy.setTrend(false);
+        todayStudy.setWord(false);
+        todayStudy.setArticle(false);
+        todayStudyRepository.save(todayStudy);
+
+        System.out.println("새로운 User에 대한 Attendance와 TodayStudy 초기화 완료: " + user.getId());
     }
 }
