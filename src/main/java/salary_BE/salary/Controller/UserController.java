@@ -121,4 +121,15 @@ public class UserController {
             return ResponseEntity.badRequest().body("Failed to update user information: " + e.getMessage());
         }
     }
+
+    // 닉네임 조회
+    @GetMapping("/auth/nickname")
+    public ResponseEntity<String> getNickname(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String loginId = userDetails.getUsername();
+        User user = userRepository.findByLoginId(loginId);
+
+        String nickname = user.getNickname();
+
+        return ResponseEntity.ok(nickname);
+    }
 }
