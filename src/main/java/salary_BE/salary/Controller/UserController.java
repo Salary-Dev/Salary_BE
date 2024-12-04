@@ -16,6 +16,7 @@ import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Service.UserService;
 import salary_BE.salary.SocialLogin.GoogleTokenVerifier;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -120,5 +121,31 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body("Failed to update user information: " + e.getMessage());
         }
+    }
+
+    // 닉네임 조회
+    @GetMapping("/auth/nickname")
+    public ResponseEntity<String> getNickname(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        String loginId = userDetails.getUsername();
+        User user = userRepository.findByLoginId(loginId);
+
+        String nickname = user.getNickname();
+
+        return ResponseEntity.ok(nickname);
+    }
+
+    // 닉네임 수정
+    @PatchMapping("/auth/nickname")
+    public ResponseEntity<Map<String, String>> patchNickname(@RequestParam("nickname") String nickname, @AuthenticationPrincipal CustomUserDetails userDetails) {
+
+        String loginId = userDetails.getUsername();
+        User user = userRepository.findByLoginId(loginId);
+
+        userService.patchNickname(String.valueOf(nickname), user.getId());
+
+        // 성공 응답 반환
+        Map<String, String> response = new HashMap<>();
+        response.put("status", "success");
+        return ResponseEntity.ok(response);
     }
 }
