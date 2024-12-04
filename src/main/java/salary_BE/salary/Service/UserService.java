@@ -53,4 +53,13 @@ public class UserService {
     public User createUser(User user) {
         return userRepository.save(user);
     }
+
+    // 닉네임 수정
+    public void patchNickname(String nickname, Long userId) {
+
+        User user = userRepository.findById(userId)
+                        .orElseThrow(() -> new IllegalArgumentException("user not found"));
+        user.setNickname(nickname);
+        userRepository.save(user);
+    }
 }
