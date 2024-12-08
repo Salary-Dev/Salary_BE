@@ -3,8 +3,8 @@ package salary_BE.salary.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import salary_BE.salary.DTO.WordLikeDto;
 import salary_BE.salary.DTO.WordRemindingDto;
+import salary_BE.salary.DTO.WordmainDto;
 import salary_BE.salary.Domain.*;
 import salary_BE.salary.Repository.*;
 
@@ -14,8 +14,6 @@ import java.util.*;
 import java.time.ZoneId;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import static org.apache.tomcat.util.http.FastHttpDateFormat.getCurrentDate;
 
 
 @Service
@@ -33,7 +31,7 @@ public class WordLikeService {
 
     // 단어장 저장 (변경 사항 저장)
     // 이미 저장되어있는 단어라면 저장하지 않음
-    public WordLike addWordToWordBook(Long wordId, User user) {
+    public WordmainDto addWordToWordBook(Long wordId, User user) {
 
         // Word 엔티티 조회
         Word word = wordRepository.findById(wordId)
@@ -52,7 +50,20 @@ public class WordLikeService {
         wordLike.setWordBookmark(true);
         wordLike.setLikeDate(LocalDateTime.now());
 
-        return wordLikeRepository.save(wordLike);
+        // 단어메인페이지 isSaved 설정 추가
+        boolean isSavedByUser = true;
+
+        return new WordmainDto(
+                word.getId(),
+                word.getWord(),
+                word.getMean(),
+                word.getStory1(),
+                word.getStory2(),
+                word.getStory3(),
+                word.getExample(),
+                Collections.emptyList(), // articles는 가져오지 않음
+                isSavedByUser
+        );
     }
 
 
