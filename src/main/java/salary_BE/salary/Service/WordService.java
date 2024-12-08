@@ -31,6 +31,7 @@ public class WordService {
 
     public Optional<WordmainDto> getWordById(Long wordId, Long userId) {
 
+        System.out.println(userId);
         // 단어 조회
         Optional<Word> wordOptional = wordRepository.findById(wordId);
 

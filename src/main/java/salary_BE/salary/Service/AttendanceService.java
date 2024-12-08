@@ -26,7 +26,6 @@ public class AttendanceService {
     // 날짜별 출석률 조회
     public Attendance getAttendanceByDate(String attendanceDate, Long userId) {
 
-        System.out.println(userId);
         LocalDate date = LocalDate.parse(attendanceDate);
         try {
             date = LocalDate.parse(attendanceDate); // 'YYYY-MM-DD' 형식 확인

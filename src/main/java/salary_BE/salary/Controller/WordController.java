@@ -30,10 +30,6 @@ public class WordController {
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByLoginId(loginId);
 
-        // 인증된 사용자가 있는 경우에만 User 객체 설정
-        if (userDetails != null) {
-            user = userDetails.getUser();
-        }
         return wordService.getWordById(word_id, user.getId())
                 .orElseThrow(() -> new IllegalArgumentException("해당 word_id에 맞는 데이터가 없습니다."));
     }
