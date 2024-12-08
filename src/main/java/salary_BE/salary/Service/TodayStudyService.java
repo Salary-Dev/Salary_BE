@@ -22,8 +22,6 @@ public class TodayStudyService {
 
     // 오늘 학습 과목 조회
     public Map<String, Boolean> getTodayStudyStatus(Long userId) {
-
-
         // 오늘 날짜 기준으로 정보 가져오기
         LocalDate today = LocalDate.now(ZoneId.of("Asia/Seoul"));
 

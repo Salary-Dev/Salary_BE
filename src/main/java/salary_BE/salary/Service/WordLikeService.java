@@ -3,8 +3,10 @@ package salary_BE.salary.Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import salary_BE.salary.DTO.ArticleDto;
 import salary_BE.salary.DTO.WordLikeDto;
 import salary_BE.salary.DTO.WordRemindingDto;
+import salary_BE.salary.DTO.WordmainDto;
 import salary_BE.salary.Domain.*;
 import salary_BE.salary.Repository.*;
 

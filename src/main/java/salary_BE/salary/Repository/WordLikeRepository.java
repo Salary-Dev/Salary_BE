@@ -29,4 +29,7 @@ public interface WordLikeRepository extends JpaRepository<WordLike, Long> {
 
     // userId를 사용하는 새로운 메서드 추가
     boolean existsByUserIdAndWordAndWordBookmarkTrue(Long userId, Word word);
+
+    // 단어 저장 여부 확인
+    Optional<WordLike> findByWordIdAndUserId(Long wordId, Long id);
 }
