@@ -8,6 +8,7 @@ import salary_BE.salary.DTO.WordmainDto;
 import salary_BE.salary.Domain.ArticleWordMapping;
 import salary_BE.salary.Domain.User;
 import salary_BE.salary.Domain.Word;
+import salary_BE.salary.Domain.WordLike;
 import salary_BE.salary.Repository.UserRepository;
 import salary_BE.salary.Repository.WordLikeRepository;
 import salary_BE.salary.Repository.WordRepository;
@@ -28,15 +29,18 @@ public class WordService {
     private final UserService userService;
     private final UserRepository userRepository;
 
-    public Optional<WordmainDto> getWordById(Long wordId, User user) {
+    public Optional<WordmainDto> getWordById(Long wordId, Long userId) {
+
+        // 단어 조회
         Optional<Word> wordOptional = wordRepository.findById(wordId);
 
         if (wordOptional.isEmpty()) {
-            System.out.println("Word not found for id: " + wordId);
             return Optional.empty();
         }
 
         Word wordEntity = wordOptional.get();
+
+        // 관련 기사 조회
         List<ArticleDto> articles = articleWordMappingRepository.findByWord(wordEntity)
                 .stream()
                 .map(mapping -> new ArticleDto(
@@ -46,17 +50,11 @@ public class WordService {
                 ))
                 .collect(Collectors.toList());
 
-        boolean isSavedByUser = false;
-        if (user != null) {
-            try {
-                isSavedByUser = wordLikeRepository.existsByUserIdAndWordAndWordBookmarkTrue(user.getId(), wordEntity);
-            } catch (Exception e) {
-                System.out.println("Error checking bookmark status: " + e.getMessage());
-            }
-        } else {
-            System.out.println("User is null. Skipping bookmark check.");
-        }
+        // 북마크 상태 확인
+        boolean isSavedByUser = wordLikeRepository.findByWordIdAndUserId(wordId, userId).isPresent();
+        //System.out.println(userId);
 
+        // DTO 생성
         WordmainDto wordmainDto = new WordmainDto(
                 wordEntity.getId(),
                 wordEntity.getWord(),
@@ -71,6 +69,7 @@ public class WordService {
 
         return Optional.of(wordmainDto);
     }
+
     public Optional<WordmainDto> getWordByword(String wordSearch, User user) {
         Optional<Word> word = wordRepository.findByWord(wordSearch);
 
