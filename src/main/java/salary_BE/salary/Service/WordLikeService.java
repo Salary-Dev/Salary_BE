@@ -76,15 +76,15 @@ public class WordLikeService {
     }
 
     // 단어장 삭제
-    public void deleteWordLike(Long wordId, User user) {
+    public void deleteWordLike(Long wordId, Long userId) {
         // Word ID로 WordLike 엔티티 조회
-        WordLike wordLike = wordLikeRepository.findByWordId(wordId)
+        WordLike wordLike = wordLikeRepository.findByWordIdAndUserId(wordId, userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 단어는 북마크되지 않았습니다."));
 
-        // 현재 사용자 확인
-        if (!wordLike.getUser().equals(user)) {
-            throw new IllegalArgumentException("현재 사용자가 이 단어를 북마크하지 않았습니다.");
-        }
+        // 현재 사용자 확인 -> findByWordIdAndUserId 하나로 합침
+//        if (!wordLike.getUser().equals(userId)) {
+//            throw new IllegalArgumentException("현재 사용자가 이 단어를 북마크하지 않았습니다.");
+//        }
 
         // WordLike 삭제
         wordLikeRepository.delete(wordLike);

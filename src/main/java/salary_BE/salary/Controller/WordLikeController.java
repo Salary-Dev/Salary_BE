@@ -68,7 +68,7 @@ public class WordLikeController {
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByLoginId(loginId);
         // 서비스 호출
-        wordLikeService.deleteWordLike(word_id,user);
+        wordLikeService.deleteWordLike(word_id,user.getId());
 
         // 성공 응답 반환
         Map<String, String> response = new HashMap<>();
