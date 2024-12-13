@@ -7,7 +7,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-public class Editor {
+@Table(name = "Economy_letter_editor")
+public class EconomyLetterEditor {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

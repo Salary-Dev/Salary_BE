@@ -4,9 +4,6 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import jakarta.persistence.*;
-import lombok.*;
-
 @Entity
 @Getter
 @Setter
@@ -19,7 +16,7 @@ public class EconomyLetter {
 
     @ManyToOne
     @JoinColumn(name = "economy_letter_editor_id", nullable = false)
-    private Editor editor;
+    private EconomyLetterEditor editor;
 
     @Column(name = "title", nullable = true)
     private String title;

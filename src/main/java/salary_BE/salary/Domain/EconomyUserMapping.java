@@ -20,6 +20,6 @@ public class EconomyUserMapping {
 
     @ManyToOne(fetch =  FetchType.LAZY)
     @JoinColumn(name = "economy_letter_editor_id")
-    private Editor editor;
+    private EconomyLetterEditor editor;
 
 }
