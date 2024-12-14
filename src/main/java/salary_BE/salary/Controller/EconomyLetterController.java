@@ -32,4 +32,12 @@ public class EconomyLetterController {
         List<Map<String, String>> response = economyLetterService.subscribeLetter(user.getId());
         return ResponseEntity.ok(response);
     }
+
+    // 도착한 경제레터 조회
+    @GetMapping("economy-letter/normal")
+    public ResponseEntity<List<Map<String, String>>> economyLetter() {
+
+        List<Map<String, String>> response = economyLetterService.economyLetter();
+        return ResponseEntity.ok(response);
+    }
 }
