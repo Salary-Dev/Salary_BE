@@ -2,7 +2,6 @@ package salary_BE.salary.Repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 import salary_BE.salary.Domain.User;
 import salary_BE.salary.Domain.Word;
 import salary_BE.salary.Domain.WordLike;
