@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
@@ -26,4 +28,7 @@ public class EconomyLetter {
 
     @Column(name = "hits", nullable = true)
     private Integer hits;
+
+    @Column(name = "created_at", nullable = false)
+    private LocalDateTime createdAt; // 생성 시간
 }
