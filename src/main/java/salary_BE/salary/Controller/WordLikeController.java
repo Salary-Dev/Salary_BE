@@ -1,7 +1,6 @@
 package salary_BE.salary.Controller;
 
 import lombok.RequiredArgsConstructor;
-<<<<<<< HEAD
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,23 +20,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 @Slf4j
-=======
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import salary_BE.salary.DTO.WordLikeDto;
-import salary_BE.salary.DTO.WordRemindingDto;
-import salary_BE.salary.Domain.WordLike;
-import salary_BE.salary.Service.WordLikeService;
-
-import java.util.List;
-
->>>>>>> 7245f7f (feat : 북마킹 단어 기능 구현)
 @RestController
 @RequiredArgsConstructor
 public class WordLikeController {
 
     private final WordLikeService wordLikeService;
-<<<<<<< HEAD
     private final UserRepository userRepository;
 
     // 단어 북마크 저장
@@ -122,26 +109,4 @@ public class WordLikeController {
         response.put("status", "success");
         return ResponseEntity.ok(response);
     }
-=======
-
-    @PostMapping("/wordbook")
-    public ResponseEntity<?> addWordToWordBook(@RequestParam String word) {
-        wordLikeService.addWordToWordBook(word);
-        return ResponseEntity.ok().body("{status: success}");
-    }
-    @GetMapping("/wordbook")
-    public List<WordLikeDto> getUserLikedWords() {
-        return wordLikeService.getUserLikedWords();
-    }
-    @DeleteMapping("/wordbook")
-    public ResponseEntity<?> deleteWordLike(@RequestParam Long word_id) {
-        wordLikeService.deleteWordLike(word_id);
-        return ResponseEntity.ok().body("{status: success}");
-    }
-    @GetMapping("/wordbook/reminder")
-    public List<WordRemindingDto> getRandomWords() {
-        return wordLikeService.getRandomWords();
-    }
-
->>>>>>> 7245f7f (feat : 북마킹 단어 기능 구현)
 }
