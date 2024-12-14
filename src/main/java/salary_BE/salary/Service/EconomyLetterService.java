@@ -30,7 +30,7 @@ public class EconomyLetterService {
         for (EconomyLetter letter : economyLetters) {
             Map<String, String> letterMap = new HashMap<>();
             letterMap.put("title", letter.getTitle());
-            letterMap.put("editor", String.valueOf(letter.getEditor()));
+            letterMap.put("editor", letter.getEditor().getName());
             letterMap.put("elapsedTime", "1시간 전");
             letterMap.put("uploadDate", "2024-12-19");
             response.add(letterMap);
@@ -50,7 +50,7 @@ public class EconomyLetterService {
         for (EconomyLetter letter : economyLetters) {
             Map<String, String> letterMap = new HashMap<>();
             letterMap.put("title", letter.getTitle());
-            letterMap.put("editor", String.valueOf(letter.getEditor()));
+            letterMap.put("editor", letter.getEditor().getName());
             letterMap.put("elapsedTime", "1시간 전");
             letterMap.put("uploadDate", "2024-12-19");
             response.add(letterMap);
