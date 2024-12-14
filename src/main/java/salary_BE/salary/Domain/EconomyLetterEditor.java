@@ -16,5 +16,5 @@ public class EconomyLetterEditor {
     private Long id;
 
     @Column(name = "economy_letter_editor_name")
-    private Long name;
+    private String name;
 }
