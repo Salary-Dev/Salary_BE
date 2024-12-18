@@ -91,32 +91,42 @@ public class WordLikeService {
     }
 
     // 단어장 리마인더
-    public List<WordRemindingDto> getRandomWords(User user) {
+    public List<Map<String, String>> getRandomWords(User user) {
 
         if (user == null) {
-            throw new IllegalStateException("사용자가 유혀하지 않습니다.");
+            throw new IllegalStateException("사용자가 유효하지 않습니다.");
         }
 
-        List<WordLike> wordLikes = wordLikeRepository.findRandomWordLikesLimit12();
+        List<WordLike> wordLikes = wordLikeRepository.findRandomWordLikesLimit10();
+        List<Map<String, String>> response = new ArrayList<>();
 
         // wordLikes가 null일 경우 빈 리스트로 처리
         if (wordLikes == null) {
             wordLikes = new ArrayList<>();
         }
 
-        return wordLikes.stream()
-                .filter(wordLike -> Objects.equals(wordLike.getUser(), user))
-                .map(wordLike -> {
-                    if (wordLike.getWord() != null && wordLike.getWord().getWord() != null) {
-                        return new WordRemindingDto(
-                                wordLike.getWord().getWord(),
-                                wordLike.getWord().getMean()
-                        );
-                    } else {
-                        return new WordRemindingDto("N/A", "N/A");
-                    }
-                })
-                .collect(Collectors.toList());
+//        return wordLikes.stream()
+//                .filter(wordLike -> Objects.equals(wordLike.getUser(), user))
+//                .map(wordLike -> {
+//                    if (wordLike.getWord() != null && wordLike.getWord().getWord() != null) {
+//                        return new WordRemindingDto(
+//                                wordLike.getWord().getWord(),
+//                                wordLike.getWord().getMean()
+//                        );
+//                    } else {
+//                        return new WordRemindingDto("N/A", "N/A");
+//                    }
+//                })
+//                .collect(Collectors.toList());
+
+        for (WordLike likes : wordLikes) {
+            Map<String, String> responseMap = new HashMap<>();
+            responseMap.put("word", likes.getWord().getWord());
+            responseMap.put("mean", likes.getWord().getMean());
+            response.add(responseMap);
+        }
+
+        return response;
     }
 
     // 단어 학습 여부

@@ -78,19 +78,21 @@ public class WordLikeController {
 
     // 단어장 리마인더
     @GetMapping("/wordbook/reminder")
-    public ResponseEntity<List<Map<String, String>>> getRandomWords(@AuthenticationPrincipal CustomUserDetails userDetails) {
+    public List<Map<String, String>> getRandomWords(@AuthenticationPrincipal CustomUserDetails userDetails) {
 
         String loginId = userDetails.getUser().getLoginId();
         User user = userRepository.findByLoginId(loginId);
         // WordRemindingDto 리스트를 JSON 배열 형식으로 변환
-        List<Map<String, String>> randomWords = wordLikeService.getRandomWords(user).stream()
-                .map(wordRemindingDto -> Map.of(
-                        "word", wordRemindingDto.getWord(),
-                        "mean", wordRemindingDto.getMean()
-                ))
-                .collect(Collectors.toList());
+//        List<Map<String, String>> randomWords = wordLikeService.getRandomWords(user).stream()
+//                .map(wordRemindingDto -> Map.of(
+//                        "word", wordRemindingDto.getWord(),
+//                        "mean", wordRemindingDto.getMean()
+//                ))
+//                .collect(Collectors.toList());
 
-        return ResponseEntity.ok(randomWords);
+        return wordLikeService.getRandomWords(user);
+
+//        return ResponseEntity.ok();
     }
 
     // 단어 학습 여부
