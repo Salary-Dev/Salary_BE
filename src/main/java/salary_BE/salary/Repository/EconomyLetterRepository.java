@@ -9,4 +9,5 @@ import java.util.List;
 public interface EconomyLetterRepository extends JpaRepository<EconomyLetter, Long> {
 
     List<EconomyLetter> findByEditor_Id(Long editorId);
+    List<EconomyLetter> findAll();
 }

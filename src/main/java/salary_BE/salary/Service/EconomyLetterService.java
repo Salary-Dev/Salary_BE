@@ -32,7 +32,8 @@ public class EconomyLetterService {
             letterMap.put("title", letter.getTitle());
             letterMap.put("editor", letter.getEditor().getName());
             letterMap.put("elapsedTime", "1시간 전");
-            letterMap.put("uploadDate", "2024-12-19");
+            letterMap.put("uploadDate", String.valueOf(letter.getCreatedAt()));
+            letterMap.put("text", letter.getText());
             response.add(letterMap);
         }
 
@@ -43,7 +44,7 @@ public class EconomyLetterService {
     public List<Map<String, String>> economyLetter() {
 
         // 나중에 로직 수정 필요
-        List<EconomyLetter> economyLetters = (List<EconomyLetter>) economyLetterRepository.findByEditor_Id(1L);
+        List<EconomyLetter> economyLetters = (List<EconomyLetter>) economyLetterRepository.findAll();
 
         List<Map<String, String>> response = new ArrayList<>();
 
@@ -52,7 +53,8 @@ public class EconomyLetterService {
             letterMap.put("title", letter.getTitle());
             letterMap.put("editor", letter.getEditor().getName());
             letterMap.put("elapsedTime", "1시간 전");
-            letterMap.put("uploadDate", "2024-12-19");
+            letterMap.put("uploadDate", String.valueOf(letter.getCreatedAt()));
+            letterMap.put("text", letter.getText());
             response.add(letterMap);
         }
 
