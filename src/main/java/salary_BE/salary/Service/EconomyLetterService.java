@@ -23,7 +23,7 @@ public class EconomyLetterService {
     public List<Map<String, String>> subscribeLetter(Long userId) {
 
         // 나중에 로직 수정 필요
-        List<EconomyLetter> economyLetters = (List<EconomyLetter>) economyLetterRepository.findByEditor_Id(1L);
+        List<EconomyLetter> economyLetters = (List<EconomyLetter>) economyLetterRepository.findAll();
 
         List<Map<String, String>> response = new ArrayList<>();
 
