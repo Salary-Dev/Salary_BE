@@ -97,7 +97,7 @@ public class WordLikeService {
             throw new IllegalStateException("사용자가 유효하지 않습니다.");
         }
 
-        List<WordLike> wordLikes = wordLikeRepository.findRandomWordLikesLimit10();
+        List<WordLike> wordLikes = wordLikeRepository.findRandomWordLikesByUserId(user.getId());
         List<Map<String, String>> response = new ArrayList<>();
 
         // wordLikes가 null일 경우 빈 리스트로 처리

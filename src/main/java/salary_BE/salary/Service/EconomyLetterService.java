@@ -33,7 +33,7 @@ public class EconomyLetterService {
             letterMap.put("editor", letter.getEditor().getName());
             letterMap.put("elapsedTime", "1시간 전");
             letterMap.put("uploadDate", String.valueOf(letter.getCreatedAt()));
-            letterMap.put("text", letter.getText());
+            letterMap.put("text", String.valueOf(letter.getText()));
             response.add(letterMap);
         }
 
@@ -54,7 +54,7 @@ public class EconomyLetterService {
             letterMap.put("editor", letter.getEditor().getName());
             letterMap.put("elapsedTime", "1시간 전");
             letterMap.put("uploadDate", String.valueOf(letter.getCreatedAt()));
-            letterMap.put("text", letter.getText());
+            letterMap.put("text", String.valueOf(letter.getText()));
             response.add(letterMap);
         }
 

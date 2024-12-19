@@ -3,6 +3,7 @@ package salary_BE.salary.Domain;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.attoparser.dom.Text;
 
 import java.time.LocalDateTime;
 
@@ -23,7 +24,7 @@ public class EconomyLetter {
     @Column(name = "title", nullable = true)
     private String title;
 
-    @Column(name = "text", nullable = true)
+    @Column(columnDefinition = "LONGTEXT")
     private String text;
 
     @Column(name = "hits", nullable = true)
