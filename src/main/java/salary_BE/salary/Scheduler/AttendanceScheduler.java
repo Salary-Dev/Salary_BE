@@ -1,17 +1,16 @@
 package salary_BE.salary.Scheduler;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-import salary_BE.salary.Controller.AttendanceController;
 import salary_BE.salary.Domain.Attendance;
 import salary_BE.salary.Domain.TodayStudy;
 import salary_BE.salary.Domain.User;
 import salary_BE.salary.Repository.AttendanceRepository;
 import salary_BE.salary.Repository.TodayStudyRepository;
+import salary_BE.salary.Service.ArticleService;
 import salary_BE.salary.Service.UserService;
 
 import java.time.LocalDate;
@@ -25,15 +24,16 @@ public class AttendanceScheduler {
     private final AttendanceRepository attendanceRepository;
     private final TodayStudyRepository todayStudyRepository;
     private final UserService userService;
+    private final ArticleService articleService; // ArticleService 주입
 
     // 매일 자정 (00:00)에 실행
     @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     @Transactional
-    public void initializeDailyAttendance() {
+    public void initializeDailyAttendanceAndFetchNews() {
 
         LocalDate todayDate = LocalDate.now(ZoneId.of("Asia/Seoul"));
 
-        // 모든 사용자에 대한 튜플 추가 및 초기화
+        // 모든 사용자에 대한 Attendance 및 TodayStudy 초기화
         userService.getAllUsers().forEach(user -> {
 
             // 마지막 Attendnace 기준
@@ -50,7 +50,7 @@ public class AttendanceScheduler {
             attendance.setUser(user);
             attendance.setAttendanceState(0);
             attendance.setLastWordId(lastWordId + 1);  // 학습 단어 넘어감
-            attendance = attendanceRepository.save(attendance);
+            attendanceRepository.save(attendance);
 
             // 2. TodayStudy 초기화
             TodayStudy todayStudy = new TodayStudy();
@@ -63,6 +63,14 @@ public class AttendanceScheduler {
 
         System.out.println("정각에 Attendance와 TodayStudy가 초기화: " + todayDate);
 
+        // 자정에 금융 뉴스 가져오기 실행
+        fetchFinanceNews();
+    }
+
+    // 금융 뉴스 가져오는 메서드 추가
+    private void fetchFinanceNews() {
+        articleService.fetchAndSaveNewsArticles("금융뉴스", 20);
+        System.out.println("자정에 금융 뉴스 기사가 성공적으로 저장되었습니다.");
     }
 
     // 유저 추가 시 학습률 및 오늘 학습 테이블 초기화
