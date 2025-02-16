@@ -68,6 +68,7 @@ public class SecurityConfig {
         http.httpBasic(httpBasic -> httpBasic.disable());
 
         // 인증 및 권한 설정
+        //permitAll제외 로그인 필요
         http.authorizeHttpRequests(auth -> auth
                 .requestMatchers("/login", "/", "/join", "/existId", "/words/search", "/shorts", "/trend-quiz", "economy-letter/normal").permitAll() // 인증 없이 접근 가능한 경로
                 .requestMatchers(HttpMethod.GET, "/words").hasAuthority("ROLE_USER")
